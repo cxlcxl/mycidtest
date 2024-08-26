@@ -1,8 +1,9 @@
 package errs
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 type MyErr struct {
@@ -24,11 +25,19 @@ func (ce *MyErr) Code() int {
 	return ce.errCode
 }
 
-func joinErrsMsg(prefix string, errs ...error) string {
-	if prefix != "" {
-		prefix = prefix + ": "
+func (ce *MyErr) join(errs ...error) string {
+	if ce.message != "" {
+		ce.message = ce.message + ": "
 	}
-	return prefix + errors.Join(errs...).Error()
+
+	var errMsg []string
+	for _, err := range errs {
+		if err != nil {
+			errMsg = append(errMsg, err.Error())
+		}
+	}
+
+	return fmt.Sprintf("%s%s", ce.message, strings.Join(errMsg, "; "))
 }
 
 func Err(myErr *MyErr, errs ...error) (err *MyErr) {
@@ -38,13 +47,13 @@ func Err(myErr *MyErr, errs ...error) (err *MyErr) {
 		}
 		err = &MyErr{
 			errCode: myErr.errCode,
-			message: joinErrsMsg(myErr.message, errs...),
+			message: myErr.join(errs...),
 		}
 	} else {
 		if len(errs) > 0 {
 			err = &MyErr{
 				errCode: http.StatusBadRequest,
-				message: joinErrsMsg("", errs...),
+				message: (&MyErr{0, ""}).join(errs...),
 			}
 		}
 	}
