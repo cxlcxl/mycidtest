@@ -5,6 +5,7 @@ import (
 	apiData "xiaoniuds.com/cid/api/data"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
+	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util"
 )
@@ -14,14 +15,14 @@ type Service struct {
 	DbConnect *data.Data
 }
 
-func (s *Service) Login(loginData apiData.LoginData) (err *errs.MyErr) {
+func (s *Service) Login(loginData apiData.LoginData) (loginInfo *auth_token.LoginToken, err *errs.MyErr) {
 	user, err := data.NewUserModel("", s.DbConnect).
 		FindUserByLogin(loginData.Email, util.Password(loginData.Password, true))
 	if err != nil {
 		return
 	}
 	if user.IsLock != 0 {
-		return errs.Err(errs.LoginUserExpireError)
+		return nil, errs.Err(errs.LoginUserExpireError)
 	}
 
 	// 判断是否过期
@@ -29,5 +30,7 @@ func (s *Service) Login(loginData apiData.LoginData) (err *errs.MyErr) {
 
 	}
 	fmt.Println(user)
+
+	loginInfo, err = auth_token.CreateLoginToken(user)
 	return
 }

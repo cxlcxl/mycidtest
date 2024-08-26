@@ -24,12 +24,13 @@ func (a *Api) Login() gin.HandlerFunc {
 			return
 		}
 
-		loginResponse := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
+		loginInfo, loginResponse := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
 		if loginResponse != nil {
 			response.Error(ctx, loginResponse)
 			return
 		}
-		response.Success(ctx, loginResponse)
+
+		response.Success(ctx, loginInfo)
 	}
 }
 

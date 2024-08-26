@@ -17,6 +17,7 @@ var (
 	ConfigLoadError      = &MyErr{400, "配置加载错误"}
 	LoginFinUserError    = &MyErr{401, "用户名或密码错误"}
 	LoginUserExpireError = &MyErr{400, "该账户已过期，请联系运营同学"}
+	ErrJwtSign           = &MyErr{500, "TOKEN 生成失败"}
 )
 
 func (ce *MyErr) Error() string {
