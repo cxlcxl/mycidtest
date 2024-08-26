@@ -1,8 +1,8 @@
 package server
 
 import (
+	"xiaoniuds.com/cid/api/user"
 	"xiaoniuds.com/cid/config"
-	"xiaoniuds.com/cid/internal/api/user"
 )
 
 func NewUserServer(c *config.Config) Opt {
