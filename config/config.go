@@ -14,13 +14,8 @@ type Config struct {
 }
 
 type Database struct {
-	Mysql Mysql `yaml:"mysql"`
-	Redis Redis `yaml:"redis"`
-}
-
-type Mysql struct {
-	UserSlave  MysqlHost `yaml:"user_slave"`
-	UserMaster MysqlHost `yaml:"user_master"`
+	Mysql []MysqlHost `yaml:"mysql"`
+	Redis Redis       `yaml:"redis"`
 }
 
 type Redis struct {
@@ -28,11 +23,8 @@ type Redis struct {
 }
 
 type MysqlHost struct {
-	Host   string `yaml:"host"`
-	Port   int    `yaml:"port"`
-	User   string `yaml:"user"`
-	Pass   string `yaml:"password"`
-	DbName string `yaml:"dbname"`
+	HostKey string `yaml:"host_key"`
+	Dsn     string `yaml:"dsn"`
 }
 type RedisHost struct {
 	Host string `yaml:"host"`

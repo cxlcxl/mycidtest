@@ -2,30 +2,30 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	apiData "xiaoniuds.com/cid/api/data"
 	"xiaoniuds.com/cid/config"
+	"xiaoniuds.com/cid/internal/data"
+	"xiaoniuds.com/cid/internal/service/user"
 	"xiaoniuds.com/cid/pkg/util/response"
 	"xiaoniuds.com/cid/pkg/util/validator"
 )
 
 type Api struct {
-	C *config.Config
-}
-
-type LoginData struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	C         *config.Config
+	DbConnect *data.Data
 }
 
 func (a *Api) Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var loginData LoginData
+		var loginData apiData.LoginData
 		err := validator.BindJsonData(ctx, &loginData)
 		if err != nil {
 			response.Error(ctx, err)
 			return
 		}
 
-		response.Success(ctx, nil)
+		loginResponse := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
+		response.Success(ctx, loginResponse)
 	}
 }
 

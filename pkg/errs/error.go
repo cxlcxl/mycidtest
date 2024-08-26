@@ -12,9 +12,11 @@ type MyErr struct {
 }
 
 var (
-	SysError        = &MyErr{400, "系统繁忙"}
-	ParamError      = &MyErr{400, "参数解析错误"}
-	ConfigLoadError = &MyErr{400, "配置加载错误"}
+	SysError             = &MyErr{400, "系统繁忙"}
+	ParamError           = &MyErr{400, "参数解析错误"}
+	ConfigLoadError      = &MyErr{400, "配置加载错误"}
+	LoginFinUserError    = &MyErr{401, "用户名或密码错误"}
+	LoginUserExpireError = &MyErr{400, "该账户已过期，请联系运营同学"}
 )
 
 func (ce *MyErr) Error() string {

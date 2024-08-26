@@ -1,14 +1,13 @@
 package server
 
 import (
-	"xiaoniuds.com/cid/api/user"
-	"xiaoniuds.com/cid/config"
+	"xiaoniuds.com/cid/api/handler/user"
 )
 
-func NewUserServer(c *config.Config) Opt {
-	userApi := &user.Api{C: c}
-
+func NewUserServer() Opt {
 	return func(srv *Server) {
+		userApi := &user.Api{C: srv.C, DbConnect: srv.DbConnects}
+
 		group := srv.engine.Group("/user")
 		{
 			group.POST("/list", userApi.Login())
