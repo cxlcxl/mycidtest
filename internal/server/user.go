@@ -10,7 +10,7 @@ func NewUserServer() Opt {
 
 		group := srv.engine.Group("/user")
 		{
-			group.POST("/list", userApi.Login())
+			group.POST("/login", userApi.Login())
 			group.POST("/", userApi.Create())
 		}
 	}

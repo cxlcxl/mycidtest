@@ -19,9 +19,9 @@ func NewDB(c *config.Config) (data *Data) {
 		if host.Dsn == "" {
 			continue
 		}
-		db, err := GetDbConnect(host)
+		db, err := connectDb(host)
 		if err != nil {
-			log.Fatalf("[%s] failed opening connection to mysql: %v", host.HostKey, err)
+			log.Fatalf("[%s]failed opening connection to mysql: %v", host.HostKey, err)
 		}
 		data.DbConnects[host.HostKey] = db
 	}
@@ -29,7 +29,7 @@ func NewDB(c *config.Config) (data *Data) {
 	return
 }
 
-func GetDbConnect(host config.MysqlHost) (*gorm.DB, error) {
+func connectDb(host config.MysqlHost) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(host.Dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
