@@ -4,31 +4,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 	"xiaoniuds.com/cid/config"
-	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
-func CreateLoginToken(user *data.User, auth config.Auth) (token *LoginToken, err *errs.MyErr) {
+func CreateLoginToken(user *LoginData, auth config.Auth) (token *LoginToken, err *errs.MyErr) {
 	exp := time.Hour * time.Duration(auth.Exp)
 	loginClaims := &LoginClaims{
-		UserInfo: &LoginData{
-			UserId:       user.UserId,
-			ProjectId:    user.ProjectId,
-			GroupId:      user.GroupId,
-			Email:        user.Email,
-			UserName:     user.UserName,
-			UserFullName: user.UserFullName,
-			Mobile:       user.Mobile,
-			DataRange:    user.DataRange,
-			LatestNews:   user.LatestNews,
-			CompanyType:  user.CompanyType,
-			Industry:     user.Industry,
-			MediaLaunch:  user.MediaLaunch,
-			CreateLevel:  user.CreateLevel,
-			UsedStatus:   user.UsedStatus,
-			MainUserId:   user.MainUserId,
-			ContractType: user.ContractType,
-		},
+		UserInfo: user,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "xiaoniuds.com",
 			Subject:   "cid",
@@ -65,6 +47,15 @@ func ParseToken(token string, auth config.Auth) (user *LoginData, err *errs.MyEr
 		return nil, errs.Err(errs.ErrParseJwtToken, e)
 	}
 
+	// 数据库或缓存验证
+	if err = dbCheckToken(token, loginClaims.UserInfo); err != nil {
+		return nil, err
+	}
+
 	user = loginClaims.UserInfo
 	return
+}
+
+func dbCheckToken(token string, user *LoginData) (err *errs.MyErr) {
+	return nil
 }

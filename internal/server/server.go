@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
@@ -24,6 +25,7 @@ func NewServer(c *config.Config) (srv *Server) {
 
 	srv.loadServes(
 		NewUserServer(),
+		NewToolServer(),
 	)
 
 	return

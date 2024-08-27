@@ -20,6 +20,7 @@ var (
 	ErrJwtSign           = &MyErr{500, "TOKEN 生成失败，签名失败"}
 	ErrJwtToken          = &MyErr{500, "TOKEN 生成失败"}
 	ErrParseJwtToken     = &MyErr{500, "TOKEN 解析失败"}
+	ErrAuthFail          = &MyErr{5001, "TOKEN 验证失败"}
 )
 
 func (ce *MyErr) Error() string {
@@ -43,9 +44,6 @@ func (ce *MyErr) join(errs ...error) string {
 
 func Err(myErr *MyErr, errs ...error) (err *MyErr) {
 	if myErr != nil {
-		if len(errs) == 0 {
-			return nil
-		}
 		err = &MyErr{
 			errCode: myErr.errCode,
 			message: myErr.join(errs...),

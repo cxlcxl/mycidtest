@@ -17,3 +17,7 @@ func Md5(s string) string {
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
 }
+
+func Offset(page, pageSize int) int {
+	return (page - 1) * pageSize
+}
