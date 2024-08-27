@@ -7,10 +7,10 @@ auth:
     exp: 24 # h
 database:
   mysql:
-    - host_key: user_slave
-      dsn: root:root@tcp(127.0.0.1:3306)/user_slave?charset=utf8mb4&parseTime=True&loc=Local
     - host_key: user_master
       dsn: root:root@tcp(127.0.0.1:3306)/user_master?charset=utf8mb4&parseTime=True&loc=Local
+    - host_key: user_slave
+      dsn:
 
   redis:
     common:
