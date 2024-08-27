@@ -17,7 +17,9 @@ var (
 	ConfigLoadError      = &MyErr{400, "配置加载错误"}
 	LoginFinUserError    = &MyErr{401, "用户名或密码错误"}
 	LoginUserExpireError = &MyErr{400, "该账户已过期，请联系运营同学"}
-	ErrJwtSign           = &MyErr{500, "TOKEN 生成失败"}
+	ErrJwtSign           = &MyErr{500, "TOKEN 生成失败，签名失败"}
+	ErrJwtToken          = &MyErr{500, "TOKEN 生成失败"}
+	ErrParseJwtToken     = &MyErr{500, "TOKEN 解析失败"}
 )
 
 func (ce *MyErr) Error() string {
@@ -29,10 +31,6 @@ func (ce *MyErr) Code() int {
 }
 
 func (ce *MyErr) join(errs ...error) string {
-	if ce.message != "" {
-		ce.message = ce.message + ": "
-	}
-
 	var errMsg []string
 	for _, err := range errs {
 		if err != nil {
@@ -40,7 +38,7 @@ func (ce *MyErr) join(errs ...error) string {
 		}
 	}
 
-	return fmt.Sprintf("%s%s", ce.message, strings.Join(errMsg, "; "))
+	return fmt.Sprintf("%s %s", ce.message, strings.Join(errMsg, "; "))
 }
 
 func Err(myErr *MyErr, errs ...error) (err *MyErr) {

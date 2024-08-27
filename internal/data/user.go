@@ -77,10 +77,10 @@ func NewUserModel(connect string, connects *Data) *UserModel {
 }
 
 func (m *UserModel) FindUserByLogin(email, password string) (user *User, err *errs.MyErr) {
-	e := m.db.Table(m.dbName).
+	e := m.db.Debug().Table(m.dbName).
 		Where("email = ? and password = ?", email, password).
 		Where("is_delete = ?", 0).
-		First(&User{}).Error
+		First(&user).Error
 	if e != nil {
 		return nil, errs.Err(errs.LoginFinUserError, e)
 	}

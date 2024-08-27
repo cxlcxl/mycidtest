@@ -17,7 +17,7 @@ type Service struct {
 
 func (s *Service) Login(loginData apiData.LoginData) (loginInfo *auth_token.LoginToken, err *errs.MyErr) {
 	user, err := data.NewUserModel("", s.DbConnect).
-		FindUserByLogin(loginData.Email, util.Password(loginData.Password, true))
+		FindUserByLogin(loginData.Email, util.Password(loginData.Password, false))
 	if err != nil {
 		return
 	}
@@ -31,6 +31,6 @@ func (s *Service) Login(loginData apiData.LoginData) (loginInfo *auth_token.Logi
 	}
 	fmt.Println(user)
 
-	loginInfo, err = auth_token.CreateLoginToken(user)
+	loginInfo, err = auth_token.CreateLoginToken(user, s.C.Auth.Login)
 	return
 }

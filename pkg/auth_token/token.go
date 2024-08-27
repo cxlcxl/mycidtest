@@ -2,39 +2,69 @@ package auth_token
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"time"
+	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
-func CreateLoginToken(user *data.User) (token *LoginToken, err *errs.MyErr) {
-	claims := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"exp":            0,
-		"iat":            0,
-		"nbf":            0,
-		"aud":            0,
-		"user_id":        0,
-		"user_name":      0,
-		"user_full_name": 0,
-		"email":          0,
-		"mobile":         0,
-		"project_id":     0,
-		"group_id":       0,
-		"used_status":    0,
-		"create_level":   0,
-	})
-
-	signedString, e := claims.SignedString("")
-	if e != nil {
-		return nil, errs.Err(errs.ErrJwtSign, e)
+func CreateLoginToken(user *data.User, auth config.Auth) (token *LoginToken, err *errs.MyErr) {
+	exp := time.Hour * time.Duration(auth.Exp)
+	loginClaims := &LoginClaims{
+		UserInfo: &LoginData{
+			UserId:       user.UserId,
+			ProjectId:    user.ProjectId,
+			GroupId:      user.GroupId,
+			Email:        user.Email,
+			UserName:     user.UserName,
+			UserFullName: user.UserFullName,
+			Mobile:       user.Mobile,
+			DataRange:    user.DataRange,
+			LatestNews:   user.LatestNews,
+			CompanyType:  user.CompanyType,
+			Industry:     user.Industry,
+			MediaLaunch:  user.MediaLaunch,
+			CreateLevel:  user.CreateLevel,
+			UsedStatus:   user.UsedStatus,
+			MainUserId:   user.MainUserId,
+			ContractType: user.ContractType,
+		},
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "xiaoniuds.com",
+			Subject:   "cid",
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			ID:        auth.Id,
+			//Audience:  jwt.ClaimStrings{"cid"}, // 接收者
+		},
 	}
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, loginClaims)
+
+	signedString, e := claims.SignedString([]byte(auth.SignKey))
+	if e != nil {
+		return nil, errs.Err(errs.ErrJwtToken, e)
+	}
+
 	token = &LoginToken{
-		AccessToken: signedString,
-		ExpireTime:  7200,
-		UserInfo:    &LoginData{},
+		Token: TokenInfo{
+			AccessToken: signedString,
+			ExpireTime:  auth.Exp * 3600,
+		},
+		UserInfo: loginClaims.UserInfo,
 	}
 	return
 }
 
-func ParseToken(token string) (user *data.User, err *errs.MyErr) {
+func ParseToken(token string, auth config.Auth) (user *LoginData, err *errs.MyErr) {
+	var loginClaims LoginClaims
+	_, e := jwt.ParseWithClaims(token, &loginClaims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(auth.SignKey), nil
+	})
+	if e != nil {
+		return nil, errs.Err(errs.ErrParseJwtToken, e)
+	}
+
+	user = loginClaims.UserInfo
 	return
 }

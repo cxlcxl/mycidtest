@@ -1,5 +1,10 @@
 port: 8080
 mode: debug
+auth:
+  login:
+    sign_key: 123456
+    id: sys_login
+    exp: 24 # h
 database:
   mysql:
     - host_key: user_slave

@@ -1,5 +1,7 @@
 package auth_token
 
+import "github.com/golang-jwt/jwt/v5"
+
 type LoginData struct {
 	UserId       int64  `json:"user_id"`        // 用户id
 	ProjectId    int64  `json:"project_id"`     // 项目组ID
@@ -20,7 +22,16 @@ type LoginData struct {
 }
 
 type LoginToken struct {
-	UserInfo    *LoginData `json:"user_info"`
-	AccessToken string     `json:"access_token"`
-	ExpireTime  int64      `json:"expire_time"`
+	UserInfo *LoginData `json:"user_info"`
+	Token    TokenInfo  `json:"token"`
+}
+
+type TokenInfo struct {
+	AccessToken string `json:"access_token"`
+	ExpireTime  int64  `json:"expire_time"`
+}
+
+type LoginClaims struct {
+	UserInfo *LoginData `json:"user_info"`
+	jwt.RegisteredClaims
 }
