@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"time"
 	"xiaoniuds.com/cid/config"
 )
 
@@ -23,6 +24,15 @@ func NewDB(c *config.Config) (data *Data) {
 		if err != nil {
 			log.Fatalf("[%s]failed opening connection to mysql: %v", host.HostKey, err)
 		}
+
+		s, err := db.DB()
+		if err != nil {
+			log.Fatalf("[%s]failed opening mysql: %v", host.HostKey, err)
+		}
+		s.SetMaxIdleConns(c.Database.MysqlConnect.MaxIdle)
+		s.SetMaxOpenConns(c.Database.MysqlConnect.MaxOpen)
+		s.SetConnMaxLifetime(time.Minute * time.Duration(c.Database.MysqlConnect.MaxLife))
+
 		data.DbConnects[host.HostKey] = db
 	}
 

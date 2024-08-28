@@ -1,11 +1,16 @@
 port: 8080
 mode: debug
+main_domain:
 auth:
   login:
     sign_key: 123456
     id: sys_login
     exp: 24 # h
 database:
+  mysql_connect:
+    max_idle: 10
+    max_open: 100
+    max_life: 60 # m
   mysql:
     - host_key: user_master
       dsn: root:root@tcp(127.0.0.1:3306)/user_master?charset=utf8mb4&parseTime=True&loc=Local

@@ -10,6 +10,7 @@ func NewUserServer() Opt {
 
 		group := srv.engine.Group("/user")
 		{
+			group.GET("/zone_domain", userApi.ZoneDomain())
 			group.POST("/login", userApi.Login())
 			group.POST("/", userApi.Create())
 		}

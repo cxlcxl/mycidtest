@@ -15,6 +15,7 @@ var (
 	SysError             = &MyErr{400, "系统繁忙"}
 	ParamError           = &MyErr{400, "参数解析错误"}
 	ConfigLoadError      = &MyErr{400, "配置加载错误"}
+	LoginEmailNotExist   = &MyErr{400, "登录邮箱不存在"}
 	LoginFinUserError    = &MyErr{401, "用户名或密码错误"}
 	LoginUserExpireError = &MyErr{400, "该账户已过期，请联系运营同学"}
 	ErrJwtSign           = &MyErr{500, "TOKEN 生成失败，签名失败"}

@@ -14,7 +14,7 @@ type Tool struct {
 }
 
 func (t *Tool) DownloadCenterList(params apiData.DownloadCenterList) (
-	logs []*data2.TaskLogDownloadCenter, total int64, err *errs.MyErr,
+	logs []*data2.DownloadCenterListItem, total int64, err *errs.MyErr,
 ) {
 	logs, total, err = data2.NewDownloadCenterModel("", t.DbConnect).
 		GetDownloadCenterList(params.LoginData, params.TaskName, params.TaskType, params.Page, params.PageSize)

@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"xiaoniuds.com/cid/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/config"
@@ -22,6 +23,10 @@ func NewServer(c *config.Config) (srv *Server) {
 		DbConnects: data.NewDB(c),
 		engine:     gin.Default(),
 	}
+
+	srv.engine.Use(
+		middleware.RequestId(),
+	)
 
 	srv.loadServes(
 		NewUserServer(),

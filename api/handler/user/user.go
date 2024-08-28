@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	apiData "xiaoniuds.com/cid/api/data"
 	"xiaoniuds.com/cid/config"
@@ -24,13 +25,36 @@ func (a *Api) Login() gin.HandlerFunc {
 			return
 		}
 
-		loginInfo, loginResponse := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
-		if loginResponse != nil {
-			response.Error(ctx, loginResponse)
+		loginInfo, err := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
+		if err != nil {
+			response.Error(ctx, err)
 			return
 		}
 
 		response.Success(ctx, loginInfo)
+	}
+}
+
+func (a *Api) ZoneDomain() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var params apiData.ZoneDomain
+		err := validator.BindJsonData(ctx, &params)
+		if err != nil {
+			response.Error(ctx, err)
+			return
+		}
+
+		zone, err := (&user.Service{C: a.C, DbConnect: a.DbConnect}).ZoneDomain(params)
+		if err != nil {
+			response.Error(ctx, err)
+			return
+		}
+
+		if zone == 0 {
+			response.Success(ctx, fmt.Sprintf("cli.%s", a.C.MainDomain))
+		} else {
+			response.Success(ctx, fmt.Sprintf("cli%d.%s", zone, a.C.MainDomain))
+		}
 	}
 }
 

@@ -8,15 +8,23 @@ import (
 )
 
 type Config struct {
-	Port     int        `yaml:"port"`
-	Mode     string     `yaml:"mode"`
-	Auth     AuthModule `yaml:"auth"`
-	Database Database   `yaml:"database"`
+	Port       int        `yaml:"port"`
+	Mode       string     `yaml:"mode"`
+	MainDomain string     `yaml:"main_domain"`
+	Auth       AuthModule `yaml:"auth"`
+	Database   Database   `yaml:"database"`
 }
 
 type Database struct {
-	Mysql []MysqlHost `yaml:"mysql"`
-	Redis Redis       `yaml:"redis"`
+	Mysql        []MysqlHost  `yaml:"mysql"`
+	MysqlConnect MysqlConnect `yaml:"mysql_connect"`
+	Redis        Redis        `yaml:"redis"`
+}
+
+type MysqlConnect struct {
+	MaxIdle int `yaml:"max_idle"`
+	MaxOpen int `yaml:"max_open"`
+	MaxLife int `yaml:"max_life"`
 }
 
 type Redis struct {
