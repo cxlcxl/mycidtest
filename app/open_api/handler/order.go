@@ -6,6 +6,8 @@ import (
 	"xiaoniuds.com/cid/app/open_api/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
+	"xiaoniuds.com/cid/internal/service/open_api"
+	"xiaoniuds.com/cid/pkg/util/response"
 	"xiaoniuds.com/cid/pkg/util/validator"
 )
 
@@ -24,7 +26,15 @@ func (o *OpenOrder) OrderList() gin.HandlerFunc {
 			}
 			return nil
 		}); err != nil {
-
+			response.Error(ctx, err)
+			return
 		}
+
+		(&open_api.Order{
+			C:         o.C,
+			DbConnect: o.DbConnect,
+		}).OrderList(params)
+
+		response.PageSuccess(ctx, params.Page, params.PageSize, 0, nil)
 	}
 }
