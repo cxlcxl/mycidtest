@@ -29,6 +29,7 @@ func NewServer(c *config.Config) (srv *Server) {
 	)
 
 	srv.loadServes(
+		NewOpenApiServer(), // 对外 OpenApi
 		NewUserServer(),
 		NewToolServer(),
 	)

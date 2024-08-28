@@ -32,7 +32,8 @@ type Redis struct {
 }
 
 type AuthModule struct {
-	Login Auth `yaml:"login"`
+	Login   Auth `yaml:"login"`
+	OpenApi Auth `yaml:"open_api"`
 }
 
 type MysqlHost struct {

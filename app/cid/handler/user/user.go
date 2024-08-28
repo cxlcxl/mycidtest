@@ -3,7 +3,7 @@ package user
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	apiData "xiaoniuds.com/cid/api/data"
+	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/user"
@@ -18,7 +18,7 @@ type Api struct {
 
 func (a *Api) Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var loginData apiData.LoginData
+		var loginData statement.LoginData
 		err := validator.BindJsonData(ctx, &loginData)
 		if err != nil {
 			response.Error(ctx, err)
@@ -37,7 +37,7 @@ func (a *Api) Login() gin.HandlerFunc {
 
 func (a *Api) ZoneDomain() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var params apiData.ZoneDomain
+		var params statement.ZoneDomain
 		err := validator.BindJsonData(ctx, &params)
 		if err != nil {
 			response.Error(ctx, err)

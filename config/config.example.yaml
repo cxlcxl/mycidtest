@@ -6,6 +6,10 @@ auth:
     sign_key: 123456
     id: sys_login
     exp: 24 # h
+  open_api:
+    sign_key: 123123
+    id: open_api
+    exp: 1 # h
 database:
   mysql_connect:
     max_idle: 10

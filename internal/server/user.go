@@ -1,7 +1,7 @@
 package server
 
 import (
-	"xiaoniuds.com/cid/api/handler/user"
+	"xiaoniuds.com/cid/app/cid/handler/user"
 )
 
 func NewUserServer() Opt {

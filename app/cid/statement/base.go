@@ -1,4 +1,4 @@
-package data
+package statement
 
 type Pagination struct {
 	Page     int `json:"page" form:"page" binding:"required"`

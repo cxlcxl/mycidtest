@@ -1,4 +1,4 @@
-package data
+package statement
 
 type LoginData struct {
 	Email          string `json:"email" binding:"required"`

@@ -1,10 +1,10 @@
 package tool
 
 import (
-	apiData "xiaoniuds.com/cid/api/data"
+	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
-	data2 "xiaoniuds.com/cid/internal/data/task"
+	"xiaoniuds.com/cid/internal/data/task"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
@@ -13,10 +13,10 @@ type Tool struct {
 	DbConnect *data.Data
 }
 
-func (t *Tool) DownloadCenterList(params apiData.DownloadCenterList) (
-	logs []*data2.DownloadCenterListItem, total int64, err *errs.MyErr,
+func (t *Tool) DownloadCenterList(params statement.DownloadCenterList) (
+	logs []*task.DownloadCenterListItem, total int64, err *errs.MyErr,
 ) {
-	logs, total, err = data2.NewDownloadCenterModel("", t.DbConnect).
+	logs, total, err = task.NewDownloadCenterModel("", t.DbConnect).
 		GetDownloadCenterList(params.LoginData, params.TaskName, params.TaskType, params.Page, params.PageSize)
 	return
 }

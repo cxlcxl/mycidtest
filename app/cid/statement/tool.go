@@ -1,4 +1,4 @@
-package data
+package statement
 
 import "xiaoniuds.com/cid/pkg/auth_token"
 

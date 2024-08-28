@@ -1,10 +1,11 @@
 package user
 
 import (
-	apiData "xiaoniuds.com/cid/api/data"
+	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
-	data2 "xiaoniuds.com/cid/internal/data/common"
+	"xiaoniuds.com/cid/internal/data/base"
+	"xiaoniuds.com/cid/internal/data/common"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util"
@@ -15,8 +16,8 @@ type Service struct {
 	DbConnect *data.Data
 }
 
-func (s *Service) ZoneDomain(params apiData.ZoneDomain) (zone int, err *errs.MyErr) {
-	userZone, err := data2.NewUserZoneModel("", s.DbConnect).FindUserZoneByEmail(params.Email)
+func (s *Service) ZoneDomain(params statement.ZoneDomain) (zone int, err *errs.MyErr) {
+	userZone, err := common.NewUserZoneModel("", s.DbConnect).FindUserZoneByEmail(params.Email)
 	if err != nil {
 		return
 	}
@@ -27,8 +28,8 @@ func (s *Service) ZoneDomain(params apiData.ZoneDomain) (zone int, err *errs.MyE
 	return
 }
 
-func (s *Service) Login(params apiData.LoginData) (loginInfo *auth_token.LoginToken, err *errs.MyErr) {
-	user, err := data.NewUserModel("", s.DbConnect).
+func (s *Service) Login(params statement.LoginData) (loginInfo *auth_token.LoginToken, err *errs.MyErr) {
+	user, err := base.NewUserModel("", s.DbConnect).
 		FindUserByLogin(params.Email, util.Password(params.Password, false))
 	if err != nil {
 		return

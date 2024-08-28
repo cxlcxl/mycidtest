@@ -35,3 +35,9 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func OpenApiAuth(auth config.Auth) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Next()
+	}
+}

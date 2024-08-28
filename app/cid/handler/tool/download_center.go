@@ -2,7 +2,7 @@ package tool
 
 import (
 	"github.com/gin-gonic/gin"
-	apiData "xiaoniuds.com/cid/api/data"
+	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/tool"
@@ -17,7 +17,7 @@ type Tool struct {
 
 func (t *Tool) DownloadCenter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var params apiData.DownloadCenterList
+		var params statement.DownloadCenterList
 		if err := validator.BindJsonData(ctx, &params); err != nil {
 			response.Error(ctx, err)
 			return
