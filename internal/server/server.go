@@ -25,6 +25,7 @@ func NewServer(c *config.Config) (srv *Server) {
 	}
 
 	srv.engine.Use(
+		middleware.Cors(),
 		middleware.RequestId(),
 	)
 
@@ -32,6 +33,7 @@ func NewServer(c *config.Config) (srv *Server) {
 		NewOpenApiServer(), // 对外 OpenApi
 		NewUserServer(),
 		NewToolServer(),
+		NewPromotionServer(),
 	)
 
 	return

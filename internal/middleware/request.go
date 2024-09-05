@@ -15,3 +15,9 @@ func RequestId() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func Cors() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+	}
+}
