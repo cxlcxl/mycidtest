@@ -1,4 +1,4 @@
-package constant
+package vars
 
 type Platform int
 type Media int

@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 type User struct {
@@ -68,7 +69,7 @@ type UserModel struct {
 
 func NewUserModel(connect string, connects *data.Data) *UserModel {
 	if connect == "" {
-		connect = "user_master"
+		connect = vars.DRUserMaster
 	}
 	return &UserModel{
 		dbName: "admin_user",

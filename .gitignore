@@ -3,3 +3,4 @@
 .DS_Store
 config/config.yaml
 tmp
+log

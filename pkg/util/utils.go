@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"os"
 )
 
 func Password(password string, isMd5 bool) string {
@@ -35,4 +36,22 @@ func Sha1(s string) string {
 	h := sha1.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func Mkdir(p string, times int) {
+	if times > 3 {
+		return
+	}
+	_, err := os.Stat(p)
+	if err == nil {
+		return
+	}
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(p, os.ModePerm)
+		if err == nil {
+			return
+		}
+	}
+	times++
+	Mkdir(p, times)
 }

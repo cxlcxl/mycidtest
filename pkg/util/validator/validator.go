@@ -5,8 +5,8 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	"xiaoniuds.com/cid/constant"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 type ValidOpt func(interface{}) error
@@ -37,7 +37,7 @@ func bindLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
 	if _, ok := reflect.TypeOf(data).Elem().FieldByName("LoginData"); !ok {
 		return nil
 	}
-	loginInfo, exists := ctx.Get(constant.LoginKey)
+	loginInfo, exists := ctx.Get(vars.LoginKey)
 	if !exists {
 		return errs.Err(errs.ParamError, errors.New("login info not exists"))
 	}

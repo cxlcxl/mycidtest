@@ -4,9 +4,9 @@ import (
 	"errors"
 	"xiaoniuds.com/cid/app/open_api/statement"
 	"xiaoniuds.com/cid/config"
-	"xiaoniuds.com/cid/constant"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 type Order struct {
@@ -15,16 +15,16 @@ type Order struct {
 }
 
 var (
-	ShopTypePDD  = constant.PlatformPdd
-	ShopTypeJD   = constant.PlatformJd
-	ShopTypeTB   = constant.PlatformTb
-	OrderQueries = map[constant.Platform]OrderInterface{
+	ShopTypePDD  = vars.PlatformPdd
+	ShopTypeJD   = vars.PlatformJd
+	ShopTypeTB   = vars.PlatformTb
+	OrderQueries = map[vars.Platform]OrderInterface{
 		ShopTypePDD: &PDD{},
 	}
 )
 
 func (o *Order) OrderList(params statement.OrderList) ([]*OrderItem, int64, *errs.MyErr) {
-	if fc, ok := OrderQueries[constant.Platform(params.ShopType)]; ok {
+	if fc, ok := OrderQueries[vars.Platform(params.ShopType)]; ok {
 		return fc.GetOrderList(params)
 	} else {
 		return nil, 0, errs.Err(errs.SysError, errors.New("暂不支持该店铺类型"))

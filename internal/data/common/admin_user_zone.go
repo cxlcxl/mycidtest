@@ -5,6 +5,7 @@ import (
 	"time"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 type UserZone struct {
@@ -22,7 +23,7 @@ type UserZoneModel struct {
 
 func NewUserZoneModel(connect string, connects *data.Data) *UserZoneModel {
 	if connect == "" {
-		connect = "common"
+		connect = vars.DRCommon
 	}
 	return &UserZoneModel{
 		dbName: "admin_user_zone",

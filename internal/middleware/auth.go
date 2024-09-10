@@ -3,10 +3,10 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/config"
-	"xiaoniuds.com/cid/constant"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util/response"
+	"xiaoniuds.com/cid/vars"
 )
 
 func LoginFailLimit() gin.HandlerFunc {
@@ -30,7 +30,7 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 			response.Error(ctx, err)
 			return
 		} else {
-			ctx.Set(constant.LoginKey, loginData)
+			ctx.Set(vars.LoginKey, loginData)
 		}
 		ctx.Next()
 	}

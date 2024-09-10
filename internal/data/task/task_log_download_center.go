@@ -4,6 +4,7 @@ import (
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util"
+	"xiaoniuds.com/cid/vars"
 
 	"gorm.io/gorm"
 	"xiaoniuds.com/cid/internal/data"
@@ -52,7 +53,7 @@ type DownloadCenterModel struct {
 
 func NewDownloadCenterModel(connect string, connects *data.Data) *DownloadCenterModel {
 	if connect == "" {
-		connect = "ad_task"
+		connect = vars.DRADTask
 	}
 	return &DownloadCenterModel{
 		dbName: "task_log_download_center",

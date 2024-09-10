@@ -3,12 +3,12 @@ package response
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"xiaoniuds.com/cid/constant"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 func RequestId(ctx *gin.Context) string {
-	requestId, _ := ctx.Get(constant.RequestIdKey)
+	requestId, _ := ctx.Get(vars.RequestIdKey)
 	return requestId.(string)
 }
 

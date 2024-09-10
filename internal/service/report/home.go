@@ -5,7 +5,6 @@ import (
 	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
-	"xiaoniuds.com/cid/internal/data/order"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
@@ -29,7 +28,7 @@ type OrderSumItem struct {
 func (s *HomeService) OrderSum(params statement.ReportHomeOrderSum) (orders []*OrderSumItem, err *errs.MyErr) {
 	sql := ""
 	var dd interface{}
-	e := order.NewDorisOrderModel("", s.DbConnect).Query(sql, &dd)
+	e := data.NewDorisModel("", s.DbConnect).QuerySQL(sql, &dd)
 	fmt.Println(e)
 	return
 }
