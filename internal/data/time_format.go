@@ -4,7 +4,6 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"time"
-	"xiaoniuds.com/cid/constant"
 )
 
 // DbDateTime 数据库时间格式化
@@ -13,7 +12,7 @@ type DbDate time.Time
 
 func (t *DbDateTime) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(*t)
-	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(constant.DateTimeLayout))), nil
+	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(time.DateTime))), nil
 }
 
 func (t DbDateTime) Value() (driver.Value, error) {
@@ -35,7 +34,7 @@ func (t *DbDateTime) Scan(v interface{}) error {
 }
 func (t *DbDate) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(*t)
-	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(constant.DateLayout))), nil
+	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(time.DateOnly))), nil
 }
 
 func (t DbDate) Value() (driver.Value, error) {

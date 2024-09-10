@@ -34,6 +34,7 @@ func NewServer(c *config.Config) (srv *Server) {
 		NewUserServer(),
 		NewToolServer(),
 		NewPromotionServer(),
+		NewHomeReportServer(),
 	)
 
 	return
