@@ -20,7 +20,7 @@ func NewLog() *Log {
 		TimestampFormat: time.DateTime,
 	})
 
-	sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("2006010215"))
+	sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("20060102"))
 	util.Mkdir(sysLogPath, 1)
 	l := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", sysLogPath, "syslog.log"),

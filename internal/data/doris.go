@@ -2,7 +2,6 @@ package data
 
 import (
 	"encoding/json"
-	"errors"
 	"gorm.io/gorm"
 	"time"
 	"xiaoniuds.com/cid/pkg/cache"
@@ -25,11 +24,6 @@ func NewDorisModel(connect string, connects *Data) *DorisModel {
 
 func (m *DorisModel) QuerySQL(sql string, value interface{}, parameters ...interface{}) (err error) {
 	err = m.db.Raw(sql, parameters...).Scan(value).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil
-		}
-	}
 	return
 }
 
