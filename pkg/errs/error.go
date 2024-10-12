@@ -22,6 +22,9 @@ var (
 	ErrJwtToken          = &MyErr{500, "TOKEN 生成失败"}
 	ErrParseJwtToken     = &MyErr{500, "TOKEN 解析失败"}
 	ErrAuthFail          = &MyErr{5001, "TOKEN 验证失败"}
+	ErrMissUserInfo      = &MyErr{5001, "用户信息缺失"}
+	ErrJsonUnmarshal     = &MyErr{5001, "JSON 解码失败"}
+	ErrJsonMarshal       = &MyErr{5001, "JSON 加码失败"}
 )
 
 func (ce *MyErr) Error() string {

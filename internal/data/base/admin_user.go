@@ -87,3 +87,27 @@ func (m *UserModel) FindUserByLogin(email, password string) (user *User, err *er
 	}
 	return
 }
+
+func (m *UserModel) FindUserById(userId int64) (user *User, err *errs.MyErr) {
+	e := m.db.Debug().Table(m.dbName).
+		Where("user_id = ?", userId).
+		First(&user).Error
+	if e != nil {
+		return nil, errs.Err(nil, e)
+	}
+	return
+}
+
+func (m *UserModel) FindUserByQuery(builder data.QueryBuilder, fields []string) (users []*User, err *errs.MyErr) {
+	query := m.db.Table(m.dbName)
+	if len(fields) > 0 {
+		query = query.Select(fields)
+	}
+
+	query = builder(query)
+	e := query.Find(&users).Error
+	if e != nil {
+		return nil, errs.Err(errs.SysError, e)
+	}
+	return
+}

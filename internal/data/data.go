@@ -13,6 +13,7 @@ import (
 	"xiaoniuds.com/cid/pkg/mylog"
 )
 
+type QueryBuilder func(db *gorm.DB) *gorm.DB
 type Data struct {
 	DbConnects map[string]*gorm.DB
 }

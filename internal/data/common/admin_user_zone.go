@@ -2,18 +2,17 @@ package common
 
 import (
 	"gorm.io/gorm"
-	"time"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/vars"
 )
 
 type UserZone struct {
-	ID         int64     `json:"id"`
-	Email      string    `json:"email"`        // 邮箱
-	ZoneIndex  int       `json:"zone_index"`   // 分区编号
-	CreateTime time.Time `json:"create_time"`  // 创建时间
-	MainUserId int64     `json:"main_user_id"` // 租户id
+	ID         int64            `json:"id"`
+	Email      string           `json:"email"`        // 邮箱
+	ZoneIndex  int              `json:"zone_index"`   // 分区编号
+	CreateTime *data.DbDateTime `json:"create_time"`  // 创建时间
+	MainUserId int64            `json:"main_user_id"` // 租户id
 }
 
 type UserZoneModel struct {
@@ -23,7 +22,7 @@ type UserZoneModel struct {
 
 func NewUserZoneModel(connect string, connects *data.Data) *UserZoneModel {
 	if connect == "" {
-		connect = vars.DRCommon
+		connect = vars.DRActCLAdCommon
 	}
 	return &UserZoneModel{
 		dbName: "admin_user_zone",
