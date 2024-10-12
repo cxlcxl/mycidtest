@@ -71,7 +71,7 @@ func (s *Service) Login(params statement.LoginData) (loginInfo *auth_token.Login
 	return
 }
 
-func (s *Service) getMyAuthorizedUsers(module, moduleRangeType string, userId int64, productVersion, isLock int8) (users []*base.User, err *errs.MyErr) {
+func (s *Service) GetMyAuthorizedUsers(module, moduleRangeType string, userId int64, productVersion, isLock int8) (users []*base.User, err *errs.MyErr) {
 	user, err := base.NewUserModel("", s.DbConnect).FindUserById(userId)
 	if err != nil {
 		return
