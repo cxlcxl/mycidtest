@@ -5,8 +5,10 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/server"
+	"xiaoniuds.com/cid/pkg/mylog"
 	"xiaoniuds.com/cid/vars"
 )
 
@@ -32,6 +34,8 @@ func main() {
 	if err != nil {
 		log.Fatal("配置文件加载失败", err.Error())
 	}
+	sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("20060102"))
+	vars.SysLog = mylog.NewLog(sysLogPath)
 
 	_ = server.NewServer(c).Run()
 }

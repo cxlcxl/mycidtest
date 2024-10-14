@@ -2,13 +2,16 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"gorm.io/gorm"
 	"slices"
+	"strings"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/common"
 	"xiaoniuds.com/cid/internal/service/user"
 	"xiaoniuds.com/cid/pkg/errs"
+	msgSender "xiaoniuds.com/cid/pkg/msg_sender"
 	"xiaoniuds.com/cid/vars"
 )
 
@@ -35,31 +38,37 @@ func (s *Base) CidSendNotify(mainUserId int64, msgFmt string, msgParams []interf
 		if !s.infoIsNotifyByType(notifyType, setting, msgFmt) {
 			continue
 		}
+		//try {
+		webhooks := []string{setting.Webhook}
+		// 短信发送的时候，可指定多个手机号发送
+		if setting.NotifyMethod == "sms" {
+			webhooks = strings.Split(setting.Webhook, ",")
+		}
+		sender := msgSender.NewMessageSender(setting.NotifyMethod, webhooks)
+		// 判断是否为钉钉消息，如果是可以换成markdown格式，并且附带商品预览图
+		var (
+			markdown *msgSender.MarkdownMsg
+			message  *msgSender.NotifyMsg
+		)
+		markdown, err = s.cidFormatNotify(mainUserId, msgFmt, msgParams, setting.NotifyMethod)
+		if err != nil {
+			// log
+			vars.SysLog.Warnf("cidFormatNotify data:%v,msg:%s", setting, err.Error())
+			continue
+		}
+		if markdown == nil {
+			message = sender.TextMessage(&msgSender.TextMsg{
+				MsgFmt: msgFmt,
+				Params: msgParams,
+			})
+		} else {
+			message = sender.MarkdownMessage(markdown)
+		}
+		err = sender.Send(message)
+		//	} catch (\Throwable $throwable) {
+		//	LogService::error(['notify_data' => $notifyDatum, 'msg' => $throwable->getMessage(),'notifyMethod'=>$notifyDatum['notify_method'],'webhooks'=>$webhooks,'sendMsg'=>$msg,'msgParams'=>$msgParams,'markdownArr'=>$markdownArr], 'cid_send_notify');
+		//}
 	}
-	/*
-	  // 循环发送配置的通知方式
-	  foreach ($notifyData as $notifyDatum) {
-
-
-	  try {
-	  $webhooks = [$notifyDatum['webhook']];
-	  // 短信发送的时候，可指定多个手机号发送
-	  if ($notifyDatum['notify_method'] == 'sms') {
-	  $webhooks = explode(',', $notifyDatum['webhook']);
-	  }
-	  $sender = MessageSenderFactory::create($notifyDatum['notify_method'], $webhooks);
-	  // 判断是否为钉钉消息，如果是可以换成markdown格式，并且附带商品预览图
-	  $markdownArr = self::cidFormatNotify($mainUserId, $msg, $msgParams, $notifyDatum['notify_method']);
-	  if(empty($markdownArr)){
-	  $message = $sender->textMessage([$msg, $msgParams]);
-	  }else{
-	  $message = $sender->markdownMessage($markdownArr['title'], $markdownArr['markdown']);
-	  }
-	  $sender->send($message);
-	  } catch (\Throwable $throwable) {
-	  LogService::error(['notify_data' => $notifyDatum, 'msg' => $throwable->getMessage(),'notifyMethod'=>$notifyDatum['notify_method'],'webhooks'=>$webhooks,'sendMsg'=>$msg,'msgParams'=>$msgParams,'markdownArr'=>$markdownArr], 'cid_send_notify');
-	  }
-	  }*/
 
 	return
 }
@@ -94,13 +103,7 @@ func (s *Base) promotionLimitNotify(dataOwnerUserId int64, notifyDatum *common.N
 	}
 }
 
-/**
- * 类型拆分了子配置后，检查是否符合配置
- * @param $notifyType
- * @param $notifyDatum
- * @param $msg
- * @return bool
- */
+// 类型拆分了子配置后，检查是否符合配置
 func (s *Base) infoIsNotifyByType(notifyType string, notifyDatum *common.NotifySetting, templateKey string) bool {
 	if notifyType == vars.NotifyTypeGoodsPromotionLimit {
 		v, ok := vars.NotifyTypeGoodsPromotionLimitValue[templateKey]
@@ -121,4 +124,73 @@ func (s *Base) infoIsNotifyByType(notifyType string, notifyDatum *common.NotifyS
 	}
 
 	return true
+}
+
+/**
+ * 构建markdown文本
+ * @param $mainUserId
+ * @param $msg
+ * @param $msgParams
+ * @param $notifyMethod
+ * @return array
+ */
+func (s *Base) cidFormatNotify(mainUserId int64, msgFmt string, msgParams []interface{}, notifyMethod string) (markdown *msgSender.MarkdownMsg, err *errs.MyErr) {
+	if mainUserId == 0 {
+		return
+	}
+	if notifyMethod != "dingding_robot" {
+		return
+	}
+	//根据模板内容，反向获取模板类型
+	msgTemplateKey := "" //array_search(msgFmt, msgTemplate)
+	if !slices.Contains([]string{
+		"authSuccessNotifyTemplate",
+		"authFailNotifyTemplate",
+		"promotionLimitNotifyTemplate",
+		"promotionNotifyTemplate",
+	}, msgTemplateKey) {
+		return
+	}
+
+	//text := msgSender.TextMsg{
+	//	MsgFmt: msgFmt,
+	//	Params: msgParams,
+	//}
+	msgText := fmt.Sprintf(msgFmt, msgParams...)
+	textArr := strings.Split(msgText, "\n")
+	title := textArr[0]
+
+	if !slices.Contains([]string{
+		"authFailNotifyTemplate",
+		"promotionLimitNotifyTemplate",
+	}, msgTemplateKey) {
+		textArr[0] = fmt.Sprintf("<font color='red'>%s</font>", title)
+	} else {
+		textArr[0] = fmt.Sprintf("<font color='green'>%s</font>", title)
+	}
+	//
+	////商品ID
+	//$goodsId = intval($msgParams[3]);
+	//$where = [
+	//'main_user_id' => $mainUserId,
+	//'goods_id' => $goodsId,
+	//];
+	//$goodsDetail = \App\Services\Cid\Pinduoduo\GoodsService::getGoodsOneByParam($where, ['goods_thumbnail_url','owner_user_id']);
+	//if(empty($goodsDetail) || empty($goodsDetail['goods_thumbnail_url'])){
+	//return [];
+	//}
+	//if($notifyMethod == 'dingding_robot'){
+	//$textArr[] = "![预览图]({$goodsDetail['goods_thumbnail_url']})";
+	//$markdown = implode("\n\n", $textArr);
+	//}else{
+	//return [];
+	//}
+	//$result = [
+	//'title' => $title,
+	//'markdown' => $markdown,
+	//'goods_thumbnail_url' => $goodsDetail['goods_thumbnail_url']
+	//];
+	//LogService::info(['result' => $result, 'main_user_id' => $mainUserId], 'cidFormatNotify');
+	//return $result;
+	return
 }

@@ -10,7 +10,7 @@ import (
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/pkg/cache"
 	"xiaoniuds.com/cid/pkg/errs"
-	"xiaoniuds.com/cid/pkg/mylog"
+	"xiaoniuds.com/cid/vars"
 )
 
 type QueryBuilder func(db *gorm.DB) *gorm.DB
@@ -18,7 +18,7 @@ type Data struct {
 	DbConnects map[string]*gorm.DB
 }
 
-func NewDB(c *config.Config, l *mylog.Log) (data *Data) {
+func NewDB(c *config.Config) (data *Data) {
 	data = &Data{
 		DbConnects: make(map[string]*gorm.DB),
 	}
@@ -26,7 +26,7 @@ func NewDB(c *config.Config, l *mylog.Log) (data *Data) {
 		if host.Dsn == "" {
 			continue
 		}
-		db, err := connectDb(host, l)
+		db, err := connectDb(host)
 		if err != nil {
 			log.Fatalf("[%s]failed opening connection to mysql: %v", host.HostKey, err)
 		}
@@ -45,9 +45,9 @@ func NewDB(c *config.Config, l *mylog.Log) (data *Data) {
 	return
 }
 
-func connectDb(host config.MysqlHost, l *mylog.Log) (*gorm.DB, error) {
+func connectDb(host config.MysqlHost) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(host.Dsn), &gorm.Config{
-		Logger: logger.New(l, logger.Config{
+		Logger: logger.New(vars.SysLog, logger.Config{
 			SlowThreshold:             1 * time.Second,
 			Colorful:                  false,
 			IgnoreRecordNotFoundError: true,

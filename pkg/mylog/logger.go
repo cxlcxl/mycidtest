@@ -4,23 +4,21 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"path"
 	"time"
 	"xiaoniuds.com/cid/pkg/util"
-	"xiaoniuds.com/cid/vars"
 )
 
 type Log struct {
 	*logrus.Logger
 }
 
-func NewLog() *Log {
+func NewLog(sysLogPath string) *Log {
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: time.DateTime,
 	})
 
-	sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("20060102"))
+	//sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("20060102"))
 	util.Mkdir(sysLogPath, 1)
 	l := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", sysLogPath, "syslog.log"),

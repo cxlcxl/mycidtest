@@ -33,7 +33,7 @@ func (s *AdminUserVersionService) GetAdminUserVersionMappingByUserIds(userIds []
 		return query
 	}
 	if !slices.Contains(fields, "user_id") {
-		fields[] = "user_id"
+		fields = append(fields, "user_id")
 	}
 	dataList, err := common.NewUserVersionModel("", s.DbConnect).GetAdminUserVersionListByBuilder(builder, fields)
 	if err != nil {

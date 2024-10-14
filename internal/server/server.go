@@ -2,30 +2,25 @@ package server
 
 import (
 	"fmt"
-	"xiaoniuds.com/cid/internal/middleware"
-	"xiaoniuds.com/cid/pkg/mylog"
-
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
+	"xiaoniuds.com/cid/internal/middleware"
 )
 
 type Server struct {
 	C          *config.Config
 	engine     *gin.Engine
 	DbConnects *data.Data
-	Log        *mylog.Log
 }
 
 type Opt func(srv *Server)
 
 func NewServer(c *config.Config) (srv *Server) {
-	myLog := mylog.NewLog()
 	srv = &Server{
 		C:          c,
-		DbConnects: data.NewDB(c, myLog),
+		DbConnects: data.NewDB(c),
 		engine:     gin.Default(),
-		Log:        myLog,
 	}
 
 	srv.engine.Use(

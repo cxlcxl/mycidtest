@@ -8,9 +8,12 @@ import (
 )
 
 type NotifySetting struct {
+	ID            int64  `json:"id"`
 	NotifyLevel   int8   `json:"notify_level"`
 	OwnerUserId   int64  `json:"owner_user_id"`
 	ExtendedValue string `json:"extended_value"`
+	Webhook       string `json:"webhook"`
+	NotifyMethod  string `json:"notify_method"`
 }
 
 type NotifySettingModel struct {
