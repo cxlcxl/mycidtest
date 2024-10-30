@@ -2,60 +2,67 @@ package auth_token
 
 import (
 	"github.com/golang-jwt/jwt/v5"
-	"time"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
-func CreateLoginToken(user *LoginData, auth config.Auth) (token *LoginToken, err *errs.MyErr) {
-	exp := time.Hour * time.Duration(auth.Exp)
+type WebToken struct {
+	User  *LoginData
+	Token *TokenInfo
+}
+
+func (t *WebToken) BuildLoginClaims(claims jwt.RegisteredClaims) jwt.Claims {
 	loginClaims := &LoginClaims{
-		UserInfo: user,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "xiaoniuds.com",
-			Subject:   "cid",
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			ID:        auth.Id,
-			//Audience:  jwt.ClaimStrings{"cid"}, // 接收者
-		},
+		UserInfo:         t.User,
+		RegisteredClaims: claims,
 	}
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, loginClaims)
+	return loginClaims
+}
 
-	signedString, e := claims.SignedString([]byte(auth.SignKey))
-	if e != nil {
-		return nil, errs.Err(errs.ErrJwtToken, e)
-	}
-
-	token = &LoginToken{
-		Token: TokenInfo{
-			AccessToken: signedString,
-			ExpireTime:  auth.Exp * 3600,
-		},
-		UserInfo: loginClaims.UserInfo,
-	}
+func (t *WebToken) SetTokenRsp(tokenInfo TokenInfo) {
+	t.Token = &tokenInfo
 	return
 }
 
-func ParseToken(token string, auth config.Auth) (user *LoginData, err *errs.MyErr) {
-	var loginClaims LoginClaims
-	_, e := jwt.ParseWithClaims(token, &loginClaims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(auth.SignKey), nil
-	})
-	if e != nil {
-		return nil, errs.Err(errs.ErrParseJwtToken, e)
-	}
+func (t *WebToken) GetToken() string {
+	return t.Token.AccessToken
+}
 
-	// 数据库或缓存验证
-	if err = dbCheckToken(token, loginClaims.UserInfo); err != nil {
-		return nil, err
-	}
+func (t *WebToken) MakeLoginClaims() jwt.Claims {
+	return &LoginClaims{}
+}
 
-	user = loginClaims.UserInfo
+func (t *WebToken) DbCheckToken(claims interface{}) *errs.MyErr {
+	t.User = claims.(*LoginClaims).UserInfo
+	return nil
+}
+
+type OpenApiToken struct {
+	Data  *OpenApiData
+	Token *TokenInfo
+}
+
+func (t *OpenApiToken) BuildLoginClaims(claims jwt.RegisteredClaims) jwt.Claims {
+	loginClaims := &OpenApiClaims{
+		OpenApiData:      t.Data,
+		RegisteredClaims: claims,
+	}
+	return loginClaims
+}
+
+func (t *OpenApiToken) SetTokenRsp(tokenInfo TokenInfo) {
+	t.Token = &tokenInfo
 	return
 }
 
-func dbCheckToken(token string, user *LoginData) (err *errs.MyErr) {
+func (t *OpenApiToken) GetToken() string {
+	return t.Token.AccessToken
+}
+
+func (t *OpenApiToken) MakeLoginClaims() jwt.Claims {
+	return &OpenApiClaims{}
+}
+
+func (t *OpenApiToken) DbCheckToken(claims interface{}) *errs.MyErr {
+	t.Data = claims.(*OpenApiClaims).OpenApiData
 	return nil
 }

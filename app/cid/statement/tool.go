@@ -1,6 +1,8 @@
 package statement
 
-import "xiaoniuds.com/cid/pkg/auth_token"
+import (
+	"xiaoniuds.com/cid/pkg/auth_token"
+)
 
 type DownloadCenterList struct {
 	*Pagination

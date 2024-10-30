@@ -33,7 +33,7 @@ func (s *Service) ZoneDomain(params statement.ZoneDomain) (zone int, err *errs.M
 	return
 }
 
-func (s *Service) Login(params statement.LoginData) (loginInfo *auth_token.LoginToken, err *errs.MyErr) {
+func (s *Service) Login(params statement.LoginData) (builder *auth_token.WebToken, err *errs.MyErr) {
 	user, err := base.NewUserModel("", s.DbConnect).
 		FindUserByLogin(params.Email, util.Password(params.Password, false))
 	if err != nil {
@@ -48,26 +48,28 @@ func (s *Service) Login(params statement.LoginData) (loginInfo *auth_token.Login
 
 	}
 
-	loginData := &auth_token.LoginData{
-		UserId:         user.UserId,
-		ProjectId:      user.ProjectId,
-		GroupId:        user.GroupId,
-		Email:          user.Email,
-		UserName:       user.UserName,
-		UserFullName:   user.UserFullName,
-		Mobile:         user.Mobile,
-		DataRange:      user.DataRange,
-		LatestNews:     user.LatestNews,
-		CompanyType:    user.CompanyType,
-		Industry:       user.Industry,
-		MediaLaunch:    user.MediaLaunch,
-		CreateLevel:    user.CreateLevel,
-		UsedStatus:     user.UsedStatus,
-		MainUserId:     user.MainUserId,
-		ContractType:   user.ContractType,
-		ProductVersion: params.ProductVersion,
+	builder = &auth_token.WebToken{
+		User: &auth_token.LoginData{
+			UserId:         user.UserId,
+			ProjectId:      user.ProjectId,
+			GroupId:        user.GroupId,
+			Email:          user.Email,
+			UserName:       user.UserName,
+			UserFullName:   user.UserFullName,
+			Mobile:         user.Mobile,
+			DataRange:      user.DataRange,
+			LatestNews:     user.LatestNews,
+			CompanyType:    user.CompanyType,
+			Industry:       user.Industry,
+			MediaLaunch:    user.MediaLaunch,
+			CreateLevel:    user.CreateLevel,
+			UsedStatus:     user.UsedStatus,
+			MainUserId:     user.MainUserId,
+			ContractType:   user.ContractType,
+			ProductVersion: params.ProductVersion,
+		},
 	}
-	loginInfo, err = auth_token.CreateLoginToken(loginData, s.C.Auth.Login)
+	err = auth_token.CreateJwtToken(builder, s.C.Auth.Login)
 	return
 }
 

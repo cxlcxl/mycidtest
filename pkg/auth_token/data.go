@@ -22,15 +22,6 @@ type LoginData struct {
 	ProductVersion int    `json:"product_version"` // 产品版本
 }
 
-type OpenApiLoginData struct {
-	MainUserId int64 `json:"main_user_id"` // 租户id
-}
-
-type LoginToken struct {
-	UserInfo *LoginData `json:"user_info"`
-	Token    TokenInfo  `json:"token"`
-}
-
 type TokenInfo struct {
 	AccessToken string `json:"access_token"`
 	ExpireTime  int64  `json:"expire_time"`
@@ -39,4 +30,15 @@ type TokenInfo struct {
 type LoginClaims struct {
 	UserInfo *LoginData `json:"user_info"`
 	jwt.RegisteredClaims
+}
+
+type OpenApiClaims struct {
+	OpenApiData *OpenApiData `json:"open_api_data"`
+	jwt.RegisteredClaims
+}
+
+type OpenApiData struct {
+	MainUserId int64  `json:"main_user_id"` // 租户id
+	AppId      string `json:"app_id"`
+	AppSecret  string `json:"-"`
 }

@@ -7,11 +7,11 @@ import (
 )
 
 type OrderList struct {
-	StartTime time.Time `form:"start_time"`
-	EndTime   time.Time `form:"end_time"`
-	ShopType  int       `form:"shop_type"`
-	TimeType  int       `form:"time_type"`
+	StartTime time.Time `form:"start_time" binding:"required"`
+	EndTime   time.Time `form:"end_time" binding:"required"`
+	ShopType  int       `form:"shop_type" binding:"required"`
+	TimeType  int       `form:"time_type" binding:"required"`
 	IsHidden  int       `form:"is_hidden"`
 	*statement.Pagination
-	OpenApiLoginData *auth_token.OpenApiLoginData
+	OpenApiData *auth_token.OpenApiData
 }

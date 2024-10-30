@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/open_api/statement"
 	"xiaoniuds.com/cid/config"
@@ -29,38 +30,7 @@ func (o *OpenOrder) OrderList() gin.HandlerFunc {
 			response.Error(ctx, err)
 			return
 		}
-
-		//sortField := "order_create_time"
-		//shopPayTimeField := [1 => "order_pay_time", 2 => "payment_time", 3 => "tk_paid_time"]
-		//verifyTimeField := [1 => "order_verify_time", 2 => "payment_time", 3 => "tk_paid_time"]
-		//$conditions = [];
-		//switch ($timeType) {
-		//case 1: //创建时间
-		//$conditions['create_time'] = "$startTime,$endTime";
-		//$sortField = "create_time";
-		//break;
-		//case 2://更新时间
-		//$conditions['update_time'] = "$startTime,$endTime";
-		//$sortField = "update_time";
-		//break;
-		//case 3://支付时间
-		//$conditions[$shopPayTimeField[$shopType]] = "$startTime,$endTime";
-		//$sortField = $shopPayTimeField[$shopType];
-		//break;
-		//case 4://审核时间
-		//$conditions[$verifyTimeField[$shopType]] = "$startTime,$endTime";
-		//$sortField = $verifyTimeField[$shopType];
-		//}
-		//$conditions['isDirect'] = $this->filterInput($request, "is_direct", 0);
-		//$isHidden = (int)$request->input("is_hidden", -1);
-		//if ($isHidden >= 0) {
-		//$conditions['isHidden'] = $isHidden;
-		//}
-		//$conditions['pid'] = $this->filterInput($request, "pid", 0);
-		//$conditions['id'] = $this->filterInput($request, "id", 0);
-		//$conditions['mainUserIds'] = $this->filterInput($request, "main_user_ids", "");
-		//$conditions['type'] = $this->filterInput($request, "type", -1);
-
+		fmt.Println("参数查看", params)
 		orders, total, err := (&open_api.Order{C: o.C, DbConnect: o.DbConnect}).OrderList(params)
 		if err != nil {
 			response.Error(ctx, err)

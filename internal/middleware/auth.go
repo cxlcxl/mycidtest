@@ -26,11 +26,16 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 			response.Error(ctx, errs.Err(errs.ErrAuthFail, err))
 			return
 		}
-		if loginData, err := auth_token.ParseToken(header.Authorization, auth); err != nil {
+		builder := &auth_token.WebToken{
+			Token: &auth_token.TokenInfo{
+				AccessToken: header.Authorization,
+			},
+		}
+		if err := auth_token.ParseToken(builder, auth); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {
-			ctx.Set(vars.LoginKey, loginData)
+			ctx.Set(vars.LoginKey, builder.User)
 		}
 		ctx.Next()
 	}
@@ -38,6 +43,22 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 
 func OpenApiAuth(auth config.Auth) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		var header AuthHeader
+		if err := ctx.ShouldBindHeader(&header); err != nil {
+			response.Error(ctx, errs.Err(errs.ErrAuthFail, err))
+			return
+		}
+		builder := &auth_token.OpenApiToken{
+			Token: &auth_token.TokenInfo{
+				AccessToken: header.Authorization,
+			},
+		}
+		if err := auth_token.ParseToken(builder, auth); err != nil {
+			response.Error(ctx, err)
+			return
+		} else {
+			ctx.Set(vars.OpenApiLoginKey, builder.Data)
+		}
 		ctx.Next()
 	}
 }

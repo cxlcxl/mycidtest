@@ -24,7 +24,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (ord
 	sort := p.getSortField(params.TimeType)
 	// 限制只能查看企业 main_user_id
 	advWheres := []string{
-		fmt.Sprintf("ad_act.main_user_id = %d", params.OpenApiLoginData.MainUserId),
+		fmt.Sprintf("ad_act.main_user_id = %d", params.OpenApiData.MainUserId),
 	}
 	//是否直推
 	//if (!empty($conditions['isDirect'])) {

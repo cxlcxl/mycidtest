@@ -2,9 +2,11 @@ package validator
 
 import (
 	"errors"
-	"reflect"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
+	"reflect"
+	"time"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/vars"
 )
@@ -50,7 +52,7 @@ func bindLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
 }
 
 func bindOpenApiLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
-	if _, ok := reflect.TypeOf(data).Elem().FieldByName("OpenApiLoginData"); !ok {
+	if _, ok := reflect.TypeOf(data).Elem().FieldByName("OpenApiData"); !ok {
 		return nil
 	}
 	loginInfo, exists := ctx.Get(vars.OpenApiLoginKey)
@@ -58,6 +60,45 @@ func bindOpenApiLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
 		return errs.Err(errs.ParamError, errors.New("login info not exists"))
 	}
 
-	reflect.ValueOf(data).Elem().FieldByName("OpenApiLoginData").Set(reflect.ValueOf(loginInfo))
+	reflect.ValueOf(data).Elem().FieldByName("OpenApiData").Set(reflect.ValueOf(loginInfo))
 	return nil
+}
+
+// RegisterValidators 应用初始化时绑定
+func RegisterValidators() {
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		for m, vFunc := range validators {
+			_ = v.RegisterValidation(m, vFunc)
+		}
+	}
+}
+
+var validators = map[string]validator.Func{
+	"date":     dateValidator,
+	"datetime": dateTimeValidator,
+	//"password":  passwordValidator,
+}
+
+// 自定义验证规则日期：date
+func dateValidator(fl validator.FieldLevel) bool {
+	date := fl.Field().Interface().(string)
+	if date == "" {
+		return true
+	}
+	if _, err := time.Parse(time.DateOnly, date); err != nil {
+		return false
+	}
+	return true
+}
+
+// 自定义验证规则日期：datetime
+func dateTimeValidator(fl validator.FieldLevel) bool {
+	datetime := fl.Field().Interface().(string)
+	if datetime == "" {
+		return true
+	}
+	if _, err := time.Parse(time.DateTime, datetime); err != nil {
+		return false
+	}
+	return true
 }

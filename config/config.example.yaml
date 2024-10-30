@@ -10,6 +10,10 @@ auth:
     sign_key: 123123
     id: open_api
     exp: 1 # h
+  open_api_apps:
+    - app_id:
+      app_secret:
+      main_user_id:
 database:
   mysql_connect:
     max_idle: 10

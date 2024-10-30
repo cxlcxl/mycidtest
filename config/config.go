@@ -33,8 +33,9 @@ type Redis struct {
 }
 
 type AuthModule struct {
-	Login   Auth `yaml:"login"`
-	OpenApi Auth `yaml:"open_api"`
+	Login       Auth         `yaml:"login"`
+	OpenApi     Auth         `yaml:"open_api"`
+	OpenApiApps []OpenApiApp `yaml:"open_api_apps"`
 }
 
 type MysqlHost struct {
@@ -58,6 +59,11 @@ type Auth struct {
 	Id      string `yaml:"id"`
 	SignKey string `yaml:"sign_key"`
 	Exp     int64  `yaml:"exp"`
+}
+type OpenApiApp struct {
+	AppId      string `yaml:"app_id"`
+	AppSecret  string `yaml:"app_secret"`
+	MainUserId int64  `yaml:"main_user_id"`
 }
 
 func LoadConfig(configPath string) (c *Config, err *errs.MyErr) {

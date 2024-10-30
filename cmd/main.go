@@ -9,6 +9,7 @@ import (
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/server"
 	"xiaoniuds.com/cid/pkg/mylog"
+	"xiaoniuds.com/cid/pkg/util/validator"
 	"xiaoniuds.com/cid/vars"
 )
 
@@ -36,6 +37,8 @@ func main() {
 	}
 	sysLogPath := path.Join(vars.BasePath, "log", "syslog", time.Now().Format("20060102"))
 	vars.SysLog = mylog.NewLog(sysLogPath)
+
+	validator.RegisterValidators()
 
 	_ = server.NewServer(c).Run()
 }
