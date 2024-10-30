@@ -29,6 +29,9 @@ func BindJsonData(ctx *gin.Context, data interface{}, opts ...ValidOpt) *errs.My
 	if err := bindLoginUser(ctx, data); err != nil {
 		return errs.Err(errs.ParamError, err)
 	}
+	if err := bindOpenApiLoginUser(ctx, data); err != nil {
+		return errs.Err(errs.ParamError, err)
+	}
 
 	return nil
 }
@@ -43,5 +46,18 @@ func bindLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
 	}
 
 	reflect.ValueOf(data).Elem().FieldByName("LoginData").Set(reflect.ValueOf(loginInfo))
+	return nil
+}
+
+func bindOpenApiLoginUser(ctx *gin.Context, data interface{}) *errs.MyErr {
+	if _, ok := reflect.TypeOf(data).Elem().FieldByName("OpenApiLoginData"); !ok {
+		return nil
+	}
+	loginInfo, exists := ctx.Get(vars.OpenApiLoginKey)
+	if !exists {
+		return errs.Err(errs.ParamError, errors.New("login info not exists"))
+	}
+
+	reflect.ValueOf(data).Elem().FieldByName("OpenApiLoginData").Set(reflect.ValueOf(loginInfo))
 	return nil
 }

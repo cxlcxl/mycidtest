@@ -26,7 +26,7 @@ func NewDB(c *config.Config) (data *Data) {
 		if host.Dsn == "" {
 			continue
 		}
-		db, err := connectDb(host)
+		db, err := connectDb(host, c.Database.SshHost)
 		if err != nil {
 			log.Fatalf("[%s]failed opening connection to mysql: %v", host.HostKey, err)
 		}
@@ -45,7 +45,15 @@ func NewDB(c *config.Config) (data *Data) {
 	return
 }
 
-func connectDb(host config.MysqlHost) (*gorm.DB, error) {
+func connectDb(host config.MysqlHost, sshHost config.ConnectHost) (*gorm.DB, error) {
+	if host.Ssh {
+		registerSsh(&Ssh{
+			Host:     sshHost.Host,
+			User:     sshHost.User,
+			Port:     sshHost.Port,
+			Password: sshHost.Pass,
+		})
+	}
 	db, err := gorm.Open(mysql.Open(host.Dsn), &gorm.Config{
 		Logger: logger.New(vars.SysLog, logger.Config{
 			SlowThreshold:             1 * time.Second,

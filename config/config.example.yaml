@@ -15,15 +15,22 @@ database:
     max_idle: 10
     max_open: 100
     max_life: 60 # m
+  ssh:
+    host:
+    port:
+    user:
+    pass:
   mysql:
     - host_key: user_master
       dsn: root:root@tcp(127.0.0.1:3306)/user_master?charset=utf8mb4&parseTime=True&loc=Local
+      ssh: false
     - host_key: user_slave
       dsn:
+      ssh: false
 
   redis:
     common:
       host: 127.0.0.1
       port: 6379
-      password:
+      pass:
       db: 0

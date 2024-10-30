@@ -9,9 +9,9 @@ func NewOpenApiServer() Opt {
 	return func(srv *Server) {
 		api := &handler.OpenOrder{C: srv.C, DbConnect: srv.DbConnects}
 
-		group := srv.engine.Group("/api", middleware.OpenApiAuth(srv.C.Auth.OpenApi))
+		group := srv.engine.Group("/open_api", middleware.OpenApiAuth(srv.C.Auth.OpenApi))
 		{
-			group.GET("/order", api.OrderList())
+			group.GET("/order/get", api.OrderList())
 		}
 	}
 }

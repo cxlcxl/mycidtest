@@ -55,3 +55,15 @@ func Mkdir(p string, times int) {
 	times++
 	Mkdir(p, times)
 }
+
+func ArrayUnique[T string | int | int64 | int8 | uint | uint64 | uint8](arr []T) []T {
+	var newArr []T
+	tmp := make(map[T]struct{})
+	for _, item := range arr {
+		if _, ok := tmp[item]; !ok {
+			newArr = append(newArr, item)
+		}
+		tmp[item] = struct{}{}
+	}
+	return newArr
+}

@@ -10,6 +10,11 @@ import (
 type DbDateTime time.Time
 type DbDate time.Time
 
+type Timestamp struct {
+	CreateTime DbDateTime `json:"create_time" gorm:"column:create_time"`
+	UpdateTime DbDateTime `json:"update_time" gorm:"column:update_time"`
+}
+
 func (t *DbDateTime) MarshalJSON() ([]byte, error) {
 	tTime := time.Time(*t)
 	return []byte(fmt.Sprintf("\"%v\"", tTime.Format(time.DateTime))), nil

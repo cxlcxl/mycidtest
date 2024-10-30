@@ -19,6 +19,7 @@ type Database struct {
 	Mysql        []MysqlHost  `yaml:"mysql"`
 	MysqlConnect MysqlConnect `yaml:"mysql_connect"`
 	Redis        Redis        `yaml:"redis"`
+	SshHost      ConnectHost  `yaml:"ssh_host"`
 }
 
 type MysqlConnect struct {
@@ -39,12 +40,19 @@ type AuthModule struct {
 type MysqlHost struct {
 	HostKey string `yaml:"host_key"`
 	Dsn     string `yaml:"dsn"`
+	Ssh     bool   `yaml:"ssh"`
 }
 type RedisHost struct {
 	Host string `yaml:"host"`
 	Port int    `yaml:"port"`
-	Pass string `yaml:"password"`
+	Pass string `yaml:"pass"`
 	Db   string `yaml:"db"`
+}
+type ConnectHost struct {
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+	Pass string `yaml:"pass"`
+	User string `yaml:"user"`
 }
 type Auth struct {
 	Id      string `yaml:"id"`

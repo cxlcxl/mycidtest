@@ -111,3 +111,16 @@ func (m *UserModel) FindUserByQuery(builder data.QueryBuilder, fields []string) 
 	}
 	return
 }
+
+func (m *UserModel) GetListByBuilder(builder data.QueryBuilder, fields []string) (list []*User, err *errs.MyErr) {
+	query := m.db.Table(m.dbName).Where("is_delete = ?", 0)
+	if len(fields) > 0 {
+		query = query.Select(fields)
+	}
+	query = builder(query)
+	e := query.Find(&list).Error
+	if e != nil {
+		return nil, errs.Err(errs.SysError, e)
+	}
+	return
+}

@@ -12,8 +12,9 @@ var (
 )
 
 const (
-	LoginKey     = "__sys_login_key__"
-	RequestIdKey = "__sys_request_id_key__"
+	LoginKey        = "__sys_login_key__"
+	OpenApiLoginKey = "__sys_api_login_key__"
+	RequestIdKey    = "__sys_request_id_key__"
 
 	PlatformJd  Platform = 1
 	PlatformPdd Platform = 2

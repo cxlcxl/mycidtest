@@ -36,7 +36,7 @@ type TaskLogDownloadCenter struct {
 	CreateUserId   int64            `json:"create_user_id"`   //
 	Type           int8             `json:"type"`             // 报表类型 1: 广告报表 2：素材报表
 	UpdateUserId   int64            `json:"update_user_id"`   //
-	IsDelete       int8             `json:"is_delete"`        // 是否已删除
+	IsDelete       uint8            `json:"is_delete"`        // 是否已删除
 	Msg            string           `json:"msg"`              // 导出错误信息
 	MediaType      string           `json:"media_type"`       // 媒体类型
 	ProductVersion int8             `json:"product_version"`  // 产品版本
@@ -67,6 +67,7 @@ type DownloadCenterListItem struct {
 	TaskStatus  int8             `json:"task_status"`
 	DownloadUrl string           `json:"download_url"`
 	CreateTime  *data.DbDateTime `json:"create_time"`
+	Msg         string           `json:"msg"`
 }
 
 func (m *DownloadCenterModel) GetDownloadCenterList(
@@ -76,7 +77,7 @@ func (m *DownloadCenterModel) GetDownloadCenterList(
 	downloadLogs []*DownloadCenterListItem, total int64, err *errs.MyErr,
 ) {
 	query := m.db.Debug().Table(m.dbName).
-		Select("id", "task_name", "task_status", "download_url", "create_time").
+		Select("id", "task_name", "task_status", "download_url", "create_time", "msg").
 		Where("create_user_id = ?", loginUser.UserId).
 		Where("product_version = ?", loginUser.ProductVersion).
 		Where("is_delete = 0")
@@ -90,7 +91,7 @@ func (m *DownloadCenterModel) GetDownloadCenterList(
 		return
 	}
 
-	e := query.Offset(util.Offset(page, pageSize)).Limit(pageSize).
+	e := query.Order("create_time desc").Offset(util.Offset(page, pageSize)).Limit(pageSize).
 		Find(&downloadLogs).Error
 	if e != nil {
 		return nil, 0, errs.Err(errs.SysError, e)

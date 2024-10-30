@@ -22,6 +22,10 @@ type LoginData struct {
 	ProductVersion int    `json:"product_version"` // 产品版本
 }
 
+type OpenApiLoginData struct {
+	MainUserId int64 `json:"main_user_id"` // 租户id
+}
+
 type LoginToken struct {
 	UserInfo *LoginData `json:"user_info"`
 	Token    TokenInfo  `json:"token"`

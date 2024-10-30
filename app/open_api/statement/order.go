@@ -3,6 +3,7 @@ package statement
 import (
 	"time"
 	"xiaoniuds.com/cid/app/cid/statement"
+	"xiaoniuds.com/cid/pkg/auth_token"
 )
 
 type OrderList struct {
@@ -12,4 +13,5 @@ type OrderList struct {
 	TimeType  int       `form:"time_type"`
 	IsHidden  int       `form:"is_hidden"`
 	*statement.Pagination
+	OpenApiLoginData *auth_token.OpenApiLoginData
 }
