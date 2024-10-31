@@ -7,10 +7,10 @@ import (
 )
 
 type TB struct {
-	ShopPayTimeField string
-	VerifyTimeField  string
+	PayTimeField    string
+	VerifyTimeField string
 }
 
-func (t *TB) GetOrderList(params statement.OrderList, connects *data.Data) (orders []*OrderItem, total int64, err *errs.MyErr) {
+func (t *TB) GetOrderList(params statement.OrderList, connects *data.Data) (orders interface{}, total int64, err *errs.MyErr) {
 	return
 }

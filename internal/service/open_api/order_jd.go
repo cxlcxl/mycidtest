@@ -7,10 +7,10 @@ import (
 )
 
 type JD struct {
-	ShopPayTimeField string
-	VerifyTimeField  string
+	PayTimeField    string
+	VerifyTimeField string
 }
 
-func (j *JD) GetOrderList(params statement.OrderList, connects *data.Data) (orders []*OrderItem, total int64, err *errs.MyErr) {
+func (j *JD) GetOrderList(params statement.OrderList, connects *data.Data) (orders interface{}, total int64, err *errs.MyErr) {
 	return
 }

@@ -15,22 +15,22 @@ auth:
       app_secret:
       main_user_id:
 database:
+  ssh: false
   mysql_connect:
     max_idle: 10
     max_open: 100
     max_life: 60 # m
-  ssh:
-    host:
-    port:
-    user:
-    pass:
+  ssh_host:
+    - host:
+      port:
+      user:
+      pass:
   mysql:
     - host_key: user_master
       dsn: root:root@tcp(127.0.0.1:3306)/user_master?charset=utf8mb4&parseTime=True&loc=Local
-      ssh: false
+
     - host_key: user_slave
       dsn:
-      ssh: false
 
   redis:
     common:

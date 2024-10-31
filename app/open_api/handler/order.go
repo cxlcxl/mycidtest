@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/open_api/statement"
 	"xiaoniuds.com/cid/config"
@@ -30,7 +29,7 @@ func (o *OpenOrder) OrderList() gin.HandlerFunc {
 			response.Error(ctx, err)
 			return
 		}
-		fmt.Println("参数查看", params)
+
 		orders, total, err := (&open_api.Order{C: o.C, DbConnect: o.DbConnect}).OrderList(params)
 		if err != nil {
 			response.Error(ctx, err)

@@ -9,7 +9,7 @@ func NewToolServer() Opt {
 	return func(srv *Server) {
 		toolApi := &tool.Tool{C: srv.C, DbConnect: srv.DbConnects}
 
-		group := srv.engine.Group("/tools", middleware.LoginAuth(srv.C.Auth.Login))
+		group := srv.engine.Group("/tools", middleware.LoginAuth(srv.C.Auth.Login, srv.DbConnects))
 		{
 			group.GET("/download_center", toolApi.DownloadCenter())
 		}

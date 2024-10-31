@@ -7,6 +7,7 @@ const (
 	DRUserMaster    = "user_master"
 	DROrderMaster   = "order_master"
 	DRADTask        = "ad_task"
+	DRCidTest       = "cid_test"
 
 	DRDorisCid = "doris_cid"
 )

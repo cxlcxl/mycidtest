@@ -2,6 +2,17 @@ package auth_token
 
 import "github.com/golang-jwt/jwt/v5"
 
+type TokenInfo struct {
+	AccessToken string `json:"access_token"`
+	ExpireTime  int64  `json:"expire_time"`
+}
+
+// LoginClaims 系统 web 的登录信息
+type LoginClaims struct {
+	UserInfo *LoginData `json:"user_info"`
+	jwt.RegisteredClaims
+}
+
 type LoginData struct {
 	UserId         int64  `json:"user_id"`         // 用户id
 	ProjectId      int64  `json:"project_id"`      // 项目组ID
@@ -20,18 +31,10 @@ type LoginData struct {
 	MainUserId     int64  `json:"main_user_id"`    // 租户id
 	ContractType   int8   `json:"contract_type"`   // 新老合同 0：老，1：新
 	ProductVersion int    `json:"product_version"` // 产品版本
+	IP             string `json:"ip"`
 }
 
-type TokenInfo struct {
-	AccessToken string `json:"access_token"`
-	ExpireTime  int64  `json:"expire_time"`
-}
-
-type LoginClaims struct {
-	UserInfo *LoginData `json:"user_info"`
-	jwt.RegisteredClaims
-}
-
+// OpenApiClaims openapi 的登录信息
 type OpenApiClaims struct {
 	OpenApiData *OpenApiData `json:"open_api_data"`
 	jwt.RegisteredClaims
@@ -40,5 +43,5 @@ type OpenApiClaims struct {
 type OpenApiData struct {
 	MainUserId int64  `json:"main_user_id"` // 租户id
 	AppId      string `json:"app_id"`
-	AppSecret  string `json:"-"`
+	IP         string `json:"ip"`
 }

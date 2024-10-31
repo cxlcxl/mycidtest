@@ -14,7 +14,7 @@ func NewOpenApiServer() Opt {
 		{
 			group.POST("/token", auth.GetToken())
 
-			use := group.Use(middleware.OpenApiAuth(srv.C.Auth.OpenApi))
+			use := group.Use(middleware.OpenApiAuth(srv.C.Auth.OpenApi, srv.DbConnects))
 			{
 				use.GET("/order/get", api.OrderList())
 			}

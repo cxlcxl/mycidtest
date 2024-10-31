@@ -69,7 +69,7 @@ func (s *Service) Login(params statement.LoginData) (builder *auth_token.WebToke
 			ProductVersion: params.ProductVersion,
 		},
 	}
-	err = auth_token.CreateJwtToken(builder, s.C.Auth.Login)
+	err = auth_token.CreateJwtToken(builder, s.C.Auth.Login, s.DbConnect)
 	return
 }
 

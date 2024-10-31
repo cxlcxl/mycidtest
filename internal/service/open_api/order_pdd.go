@@ -15,189 +15,46 @@ import (
 )
 
 type PDD struct {
-	ShopPayTimeField string
-	VerifyTimeField  string
+	PayTimeField    string
+	VerifyTimeField string
 }
 
-func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (orders []*OrderItem, total int64, err *errs.MyErr) {
-	//params.OpenApiLoginData.MainUserId
+func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (res interface{}, total int64, err *errs.MyErr) {
 	sort := p.getSortField(params.TimeType)
 	// 限制只能查看企业 main_user_id
 	advWheres := []string{
 		fmt.Sprintf("ad_act.main_user_id = %d", params.OpenApiData.MainUserId),
+		"ad_act.no_callback_reason != '跨店订单不回传'",
+		"ad_act.is_hide = 0",
 	}
-	//是否直推
-	//if (!empty($conditions['isDirect'])) {
-	//$advWheres[] = "ad_act.is_direct = {$conditions['isDirect']}";
-	//}
-	//
-	////是否隐藏订单（=是否跨店，此处跨店由小牛定义）
-	//if (isset($conditions['isHidden'])) {
-	//$isHidden = $conditions['isHidden'];
-	//$advWheres[] = "ad_act.is_hide = {$isHidden}";
-	//} else {
-	//// $advWheres[] = "ad_act.no_callback_reason != '跨店订单不回传'";
-	//}
-	//if (!empty($conditions['type']) && $conditions['type'] > 0) {
-	//$advWheres[] = "ad_act.type = {$conditions['type']}";
-	//}
-	//if (!empty($conditions['pid'])) {
-	//$advWheres[] = "ad_act.p_id = '{$conditions['pid']}'";
-	//}
-	//if (!empty($conditions['mainUserIds'])) {
-	//$advWheres[] = "ad_act.main_user_id in ({$conditions['mainUserIds']})";
-	//}
-
-	//// 指定查看用户
-	//if (!empty($conditions['owner_user_ids'])) {
-	//if (is_array($conditions['owner_user_ids'])) {
-	//$conditions['owner_user_ids'] = implode(',', $conditions['owner_user_ids']);
-	//}
-	//$advWheres[] = "ad_act.owner_user_id in ({$conditions['owner_user_ids']})";
-	//}
-	//
-	////订单状态
-	//if ($conditions['order_status'] != "") {
-	//$advWheres[] = "ad_act.order_status in ({$conditions ['order_status']})";
-	//}
-	//if ($conditions['id'] > 0) {
-	//$id = (int)$conditions['id'];
-	//$advWheres[] = "ad_act.id > {$id}";
-	//}
-	//
-	////订单号
-	//if (!empty($conditions['order_sn'])) {
-	//$advWheres[] = "ad_act.order_sn ='{$conditions ['order_sn']}'";
-	//}
-	//
-	////广告ID
-	//if (!empty($conditions['ad_id'])) {
-	//$conditions['ad_id'] = intval($conditions['ad_id']);
-	//$advWheres[] = "ad_act.ad_id = {$conditions ['ad_id']} ";
-	//}
-	//
-	//// 创量跟踪类型
-	//if (!empty($conditions['cl_trace_type'])) {
-	//$advWheres[] = "ad_act.cl_trace_type ={$conditions ['cl_trace_type']}";
-	//}
-
-	////商品
-	//if (!empty($conditions['goods_keyword'])) {
-	//if (is_numeric($conditions ['goods_keyword'])) {
-	//$advWheres[] = "ad_act.goods_id ={$conditions ['goods_keyword']}";
-	//} else {
-	//$advWheres[] = "ad_act.goods_name like '%{$conditions ['goods_keyword']}%'";
-	//}
-	//}
-	////推广位
-	//if (!empty($conditions['promotion_keyword'])) {
-	//$promotionKeyword = str_replace('_', '', $conditions['promotion_keyword']);
-	//if (is_numeric($promotionKeyword)) {
-	//$advWheres[] = "ad_act.p_id ='{$conditions ['promotion_keyword']}'";
-	//} else {
-	//$advWheres[] = "ad_act.p_name like '%{$conditions ['promotion_keyword']}%'";
-	//}
-	//}
-	////创建时间
-	//if (!empty($conditions['create_time'])) {
-	//$tTime = explode(',', $conditions['create_time']);
-	//$startDate = $tTime[0] ?? date('Y-m-d  H:i:s');
-	//$endDate = $tTime[1] ?? date('Y-m-d  H:i:s');
-	//$advWheres[] = "(ad_act.create_time >= '{$startDate}' and ad_act.create_time <='{$endDate}')";
-	//}
-	////更新时间
-	//if (!empty($conditions['update_time'])) {
-	//$tTime = explode(',', $conditions['update_time']);
-	//$startDate = $tTime[0] ?? date('Y-m-d  H:i:s');
-	//$endDate = $tTime[1] ?? date('Y-m-d  H:i:s');
-	//$advWheres[] = "(ad_act.update_time >= '{$startDate}' and ad_act.update_time <='{$endDate}')";
-	//}
-	////支付时间
-	//if (!empty($conditions['order_pay_time'])) {
-	//$tTime = explode(',', $conditions['order_pay_time']);
-	//$startDate = strtotime($tTime[0] ?? date('Y-m-d  H:i:s'));
-	//$endDate = strtotime($tTime[1] ?? date('Y-m-d H:i:s'));
-	//$advWheres[] = "(ad_act.order_pay_time >= '{$startDate}' and ad_act.order_pay_time <='{$endDate}')";
-	//}
-	////审核时间
-	//if (!empty($conditions['order_verify_time'])) {
-	//$tTime = explode(',', $conditions['order_verify_time']);
-	//$startDate = strtotime($tTime[0] ?? date('Y-m-d  H:i:s'));
-	//$endDate = strtotime($tTime[1] ?? date('Y-m-d H:i:s'));
-	//$advWheres[] = "(ad_act.order_verify_time >= '{$startDate}' and ad_act.order_verify_time <='{$endDate}')";
-	//}
-	//// 夸品订单查询
-	//if (isset($conditions['is_diff_goods']) && is_numeric($conditions['is_diff_goods'])) {
-	//$advWheres[] = "ad_act.is_diff_goods ={$conditions['is_diff_goods']}";
-	//}
-	////时间限制 1天
-	//if (isset($endDate) && isset($startDate) && (($endDate - $startDate) / 86400) > 1) {
-	//return ['list' => []];
-	//}
-	////多多进宝账号ID
-	//if (!empty($conditions['account_user_id'])) {
-	//$aIds = $conditions['account_user_id'];
-	//$advWheres[] = " ad_act.account_user_id in ({$aIds}) ";
-	//}
-	//// 回传状态
-	///*
-	// * 0-未回传
-	// * 1-已回传
-	// * delay_callback-延迟回传中 (对应查询未回传原因为"延迟回传"的订单)
-	// */
-	//if (isset($conditions['is_callback']) && is_numeric($conditions['is_callback'])) {
-	//$isCallback = $conditions['is_callback'] > 0 ? $conditions['is_callback'] : 0;
-	//$advWheres[] = " ad_act.is_callback ={$isCallback} ";
-	//}
-	//$noCallbackReason = [];
-	//if (isset($conditions['is_callback']) && $conditions['is_callback'] == 'delay_callback') {
-	//$noCallbackReason[] = '延迟回传';
-	//}
-	//// 未回传原因
-	//if (!empty($conditions['no_callback_reason'])) {
-	//$noCallbackReason[] = $conditions['no_callback_reason'];
-	//}
-	//if (!empty($noCallbackReason)) {
-	//// 订单内商品数量大于N不回传 特殊处理
-	//if (in_array('订单内商品数量大于N不回传', $noCallbackReason)) {
-	//$advWheres[] = " ad_act.no_callback_reason like '订单内商品数量大于%不回传' ";
-	//unset($noCallbackReason[array_search('订单内商品数量大于N不回传', $noCallbackReason)]);
-	//}
-	//// 如果还有数据未回传原因，则按照原有逻辑处理
-	//if (!empty($noCallbackReason)) {
-	//$noCallbackReason = implode("','", $noCallbackReason);
-	//$advWheres[] = " ad_act.no_callback_reason in ('{$noCallbackReason}') ";
-	//}
-	//}
-	//// 回传类型
-	//if (!empty($conditions['callback_type']) || is_numeric($conditions['callback_type'])) {
-	//$callbackType = $conditions['callback_type'];
-	//$advWheres[] = " ad_act.callback_type ={$callbackType} ";
-	//}
-	////归因状态
-	//if (!empty($conditions['is_click']) || is_numeric($conditions['is_click'])) {
-	//$isClick = $conditions['is_click'] > 0 ? 1 : 0;
-	//if ($isClick == 0) {
-	//$advWheres[] = " ad_act.click_id = 0 ";
-	//} else {
-	//$advWheres[] = " ad_act.click_id > 0 ";
-	//}
-	//}
-	//// 媒体类型
-	//if (!empty($conditions['media_type']) || is_numeric($conditions['media_type'])) {
-	//$mediaType = empty($conditions['media_type']) ? 0 : $conditions['media_type'];
-	//$advWheres[] = " ad_act.media_type in ({$mediaType})";
-	//}
-	////广告账号ID
-	//if (!empty($conditions['advertiser_id'])) {
-	//$ttaIds = $conditions['advertiser_id'];
-	//$advWheres[] = " ad_act.advertiser_id in ({$ttaIds}) ";
-	//}
-	//// 店铺
-	//if (!empty($conditions['mall_ids'])) {
-	//$advWheres[] = " ad_act.mall_id in ({$conditions['mall_ids']})";
-	//}
-	//
+	if params.TimeType == TimeTypeCreateTime {
+		advWheres = append(
+			advWheres,
+			fmt.Sprintf("ad_act.create_time >= '%s'", params.StartTime.Format(time.DateTime)),
+			fmt.Sprintf("ad_act.create_time <= '%s'", params.EndTime.Format(time.DateTime)),
+		)
+	}
+	if params.TimeType == TimeTypeUpdateTime {
+		advWheres = append(
+			advWheres,
+			fmt.Sprintf("ad_act.update_time >= '%s'", params.StartTime.Format(time.DateTime)),
+			fmt.Sprintf("ad_act.update_time <= '%s'", params.EndTime.Format(time.DateTime)),
+		)
+	}
+	if params.TimeType == TimeTypePayTime {
+		advWheres = append(
+			advWheres,
+			fmt.Sprintf("ad_act.%s >= %d", p.PayTimeField, params.StartTime.Unix()),
+			fmt.Sprintf("ad_act.%s <= %d", p.PayTimeField, params.EndTime.Unix()),
+		)
+	}
+	if params.TimeType == TimeTypeVerifyTime {
+		advWheres = append(
+			advWheres,
+			fmt.Sprintf("ad_act.%s >= %d", p.VerifyTimeField, params.StartTime.Unix()),
+			fmt.Sprintf("ad_act.%s <= %d", p.VerifyTimeField, params.EndTime.Unix()),
+		)
+	}
 	baseFields := []string{
 		"ad_act.id", "ad_act.order_sn", "ad_act.p_id", "ad_act.p_name", "ad_act.is_hide", "ad_act.goods_id",
 		"ad_act.goods_name", "ad_act.goods_quantity", "ad_act.promotion_rate", "ad_act.goods_thumbnail_url", "ad_act.order_amount",
@@ -246,7 +103,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (ord
 		"SELECT %s,COUNT() OVER() AS total_count FROM chuangliang_doris_cid.ad_order_pdd AS ad_act %s WHERE %s GROUP BY %s ORDER BY id ASC,%s DESC LIMIT %d OFFSET %d",
 		selectFieldSQL, leftJoinSQL, advWhereSQL, groupByFieldSQL, sort, params.PageSize, offset,
 	)
-
+	var orders []*PddOrderItem
 	e := data.NewDorisModel("", connects).QuerySQL(listSQL, &orders)
 	if e != nil {
 		err = errs.Err(errs.SysError, e)
@@ -328,19 +185,21 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (ord
 			} else {
 				orders[i].TypeDesc = "其他"
 			}
-			orderRefundTime, _ := order.OrderRefundTime.Value()
-			if orderRefundTime != nil && orderRefundTime.(time.Time).Format(time.DateTime) == "1970-01-01 08:00:00" {
-				parse, _ := time.Parse(time.DateTime, "0000-00-00 00:00:00")
-				orders[i].OrderRefundTime = data.DbDateTime(parse)
+			if order.OrderRefundTime == "1970-01-01 08:00:00" {
+				order.OrderRefundTime = "--"
 			}
 			if directDesc, ok := vars.OrderDirect[order.IsDirect]; ok {
 				orders[i].IsDirectDesc = directDesc
 			} else {
 				orders[i].IsDirectDesc = "--"
 			}
-			//$v['trace_type_msg'] = PddOrderService::$traceTypeMsg[$v['cl_trace_type']] ? PddOrderService::$traceTypeMsg[$v['cl_trace_type']] : '--';
-			//$v['csite_type_desc'] = OrderReportService::$csiteTypeDesc[$v['csite_type']]; //广告版位
-			//$v['callback_event_desc'] = OrderReportService::$callbackEventDesc[$v['callback_event']]; //回传事件
+			if traceTypeMsg, ok := vars.TraceType[order.ClTraceType]; ok {
+				orders[i].TraceTypeMsg = traceTypeMsg
+			} else {
+				orders[i].TraceTypeMsg = "--"
+			}
+			orders[i].CSiteTypeDesc = vars.AdSiteType[order.CSiteType]            // 广告版位
+			orders[i].CallbackEventDesc = vars.CallbackEvent[order.CallbackEvent] // 回传事件
 
 			if order.MainUserId == 0 {
 				if pid, ok := pidMap[order.PID]; ok {
@@ -353,6 +212,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (ord
 			}
 		}
 	}
+	res = orders
 
 	return
 }
@@ -365,7 +225,7 @@ func (p *PDD) getSortField(timeType int) (field string) {
 	case TimeTypeUpdateTime:
 		field = "update_time"
 	case TimeTypePayTime:
-		field = p.ShopPayTimeField
+		field = p.PayTimeField
 		break
 	case TimeTypeVerifyTime:
 		field = p.VerifyTimeField

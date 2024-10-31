@@ -21,12 +21,25 @@ const (
 
 	OrderNotDirect = 0
 	OrderIsDirect  = 1
+
+	TraceTypeSameStore  = 2
+	TraceTypeCrossStore = 3
+)
+const (
+	AdSiteTypeDefault = iota
+)
+const (
+	CallbackEventDefault = iota
 )
 
 var (
 	OrderDirect = map[int]string{
 		OrderNotDirect: "非直推订单",
 		OrderIsDirect:  "直推订单",
+	}
+	TraceType = map[int]string{
+		TraceTypeSameStore:  "同店",
+		TraceTypeCrossStore: "跨店",
 	}
 	PddOrderType = map[int]string{
 		PddOrderType0:   "单品",
@@ -46,5 +59,25 @@ var (
 		PddOrderType103: "百亿补贴频道",
 		PddOrderType104: "内购清单频道",
 		PddOrderType105: "超级红包",
+	}
+	// AdSiteType 广告版位映射关系
+	AdSiteType = map[int]string{
+		0: "--",
+		1: "抖音",
+		2: "今日头条",
+		3: "西瓜视频",
+		4: "火山小视频",
+		5: "番茄小说",
+		6: "穿山甲开屏广告",
+		7: "穿山甲网盟非开屏广告",
+		8: "通投广告位",
+		9: "搜索",
+	}
+	// CallbackEvent 回传事件
+	CallbackEvent = map[int]string{
+		0: "--",
+		1: "APP内下单",
+		2: "付费",
+		3: "APP内下单、付费",
 	}
 )

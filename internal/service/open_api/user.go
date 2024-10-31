@@ -18,24 +18,23 @@ func (s *Service) GetToken(params statement.Token) (builder *auth_token.OpenApiT
 	for _, a := range s.C.Auth.OpenApiApps {
 		if a.AppId == params.AppId {
 			if a.AppSecret != params.AppSecret {
-				err = errs.Err(errs.SysError, errs.ErrJwtToken)
+				err = errs.Err(errs.SysError, errs.OpenApiErrWornSecret)
 				return
 			}
 			app = &a
 		}
 	}
 	if app == nil {
-		err = errs.Err(errs.SysError, errs.ErrMissUserInfo)
+		err = errs.Err(errs.SysError, errs.OpenApiErrMissAppId)
 		return
 	}
 	builder = &auth_token.OpenApiToken{
 		Data: &auth_token.OpenApiData{
 			MainUserId: app.MainUserId,
 			AppId:      params.AppId,
-			AppSecret:  params.AppSecret,
 		},
 	}
-	err = auth_token.CreateJwtToken(builder, s.C.Auth.OpenApi)
+	err = auth_token.CreateJwtToken(builder, s.C.Auth.OpenApi, s.DbConnect)
 
 	return
 }

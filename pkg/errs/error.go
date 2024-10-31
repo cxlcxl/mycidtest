@@ -25,6 +25,8 @@ var (
 	ErrMissUserInfo      = &MyErr{5001, "用户信息缺失"}
 	ErrJsonUnmarshal     = &MyErr{5001, "JSON 解码失败"}
 	ErrJsonMarshal       = &MyErr{5001, "JSON 加码失败"}
+	OpenApiErrMissAppId  = &MyErr{5001, "AppId 不存在"}
+	OpenApiErrWornSecret = &MyErr{5001, "AppSecret 错误"}
 )
 
 func (ce *MyErr) Error() string {

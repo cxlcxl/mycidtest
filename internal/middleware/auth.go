@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/config"
+	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util/response"
@@ -19,7 +20,7 @@ type AuthHeader struct {
 	Authorization string `header:"Authorization"`
 }
 
-func LoginAuth(auth config.Auth) gin.HandlerFunc {
+func LoginAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var header AuthHeader
 		if err := ctx.ShouldBindHeader(&header); err != nil {
@@ -31,7 +32,7 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 				AccessToken: header.Authorization,
 			},
 		}
-		if err := auth_token.ParseToken(builder, auth); err != nil {
+		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {
@@ -41,7 +42,7 @@ func LoginAuth(auth config.Auth) gin.HandlerFunc {
 	}
 }
 
-func OpenApiAuth(auth config.Auth) gin.HandlerFunc {
+func OpenApiAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var header AuthHeader
 		if err := ctx.ShouldBindHeader(&header); err != nil {
@@ -53,7 +54,7 @@ func OpenApiAuth(auth config.Auth) gin.HandlerFunc {
 				AccessToken: header.Authorization,
 			},
 		}
-		if err := auth_token.ParseToken(builder, auth); err != nil {
+		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {

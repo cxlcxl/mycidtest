@@ -3,8 +3,8 @@ package statement
 import "time"
 
 type Pagination struct {
-	Page     int `json:"page" form:"page" binding:"required"`
-	PageSize int `json:"page_size" form:"page_size" binding:"required"`
+	Page     int `json:"page" form:"page" binding:"required,numeric"`
+	PageSize int `json:"page_size" form:"page_size" binding:"required,numeric"`
 }
 
 type VDate time.Time

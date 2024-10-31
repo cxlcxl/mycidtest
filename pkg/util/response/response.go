@@ -26,11 +26,13 @@ func PageSuccess(ctx *gin.Context, page, pageSize int, total int64, data interfa
 		"request_id": RequestId(ctx),
 		"code":       0,
 		"msg":        "ok",
-		"data":       data,
-		"page_info": gin.H{
-			"page":        page,
-			"page_size":   pageSize,
-			"total_count": total,
+		"data": map[string]interface{}{
+			"list": data,
+			"page_info": gin.H{
+				"page":        page,
+				"page_size":   pageSize,
+				"total_count": total,
+			},
 		},
 	})
 }
