@@ -17,6 +17,7 @@ type LoginData struct {
 	UserId         int64  `json:"user_id"`         // 用户id
 	ProjectId      int64  `json:"project_id"`      // 项目组ID
 	GroupId        int64  `json:"group_id"`        // 权限组ID
+	GroupName      string `json:"group_name"`      // 权限组ID
 	Email          string `json:"email"`           // 邮箱
 	UserName       string `json:"user_name"`       // 用户名
 	UserFullName   string `json:"user_full_name"`  // 用户全称

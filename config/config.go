@@ -13,6 +13,7 @@ type Config struct {
 	MainDomain string     `yaml:"main_domain"`
 	Auth       AuthModule `yaml:"auth"`
 	Database   Database   `yaml:"database"`
+	DuoIds     []int64    `yaml:"duo_ids"`
 }
 
 type Database struct {

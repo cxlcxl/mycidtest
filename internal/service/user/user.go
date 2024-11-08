@@ -53,6 +53,7 @@ func (s *Service) Login(params statement.LoginData) (builder *auth_token.WebToke
 			UserId:         user.UserId,
 			ProjectId:      user.ProjectId,
 			GroupId:        user.GroupId,
+			GroupName:      "",
 			Email:          user.Email,
 			UserName:       user.UserName,
 			UserFullName:   user.UserFullName,

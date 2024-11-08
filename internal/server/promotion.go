@@ -10,11 +10,11 @@ func NewPromotionServer() Opt {
 		promotionApi := &promotion.Promotion{C: srv.C, DbConnect: srv.DbConnects}
 		mediaActApi := &promotion.MediaAccount{C: srv.C, DbConnect: srv.DbConnects}
 
-		goodsLink := srv.engine.Group("/goods_link", middleware.LoginAuth(srv.C.Auth.Login, srv.DbConnects))
+		goodsLink := srv.engine.Group("/goods", middleware.LoginAuth(srv.C.Auth.Login, srv.DbConnects))
 		{
-			goodsLink.GET("/pdd", promotionApi.PddGoodsLink())
-			goodsLink.GET("/tb", promotionApi.TbGoodsLink())
-			goodsLink.GET("/jd", promotionApi.JdGoodsLink())
+			goodsLink.GET("/pdd", promotionApi.PddGoods())
+			goodsLink.GET("/tb", promotionApi.TbGoods())
+			goodsLink.GET("/jd", promotionApi.JdGoods())
 		}
 
 		mediaAct := srv.engine.Group("/advertiser", middleware.LoginAuth(srv.C.Auth.Login, srv.DbConnects))

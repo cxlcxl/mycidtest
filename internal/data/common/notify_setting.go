@@ -31,7 +31,7 @@ func NewNotifySettingModel(connect string, connects *data.Data) *NotifySettingMo
 	}
 }
 
-func (m *NotifySettingModel) GetNotifySettingListByBuilder(builder data.QueryBuilder, fields []string) (notifySettings []*NotifySetting, err *errs.MyErr) {
+func (m *NotifySettingModel) QueryByBuilder(builder data.QueryBuilder, fields []string) (notifySettings []*NotifySetting, err *errs.MyErr) {
 	query := m.db.Table(m.dbName).Where("is_delete = ?", 0)
 	if len(fields) > 0 {
 		query = query.Select(fields)

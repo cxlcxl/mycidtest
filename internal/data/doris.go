@@ -23,7 +23,7 @@ func NewDorisModel(connect string, connects *Data) *DorisModel {
 }
 
 func (m *DorisModel) QuerySQL(sql string, value interface{}, parameters ...interface{}) (err error) {
-	err = m.db.Debug().Raw(sql, parameters...).Scan(value).Error
+	err = m.db.Raw(sql, parameters...).Scan(value).Error
 	return
 }
 

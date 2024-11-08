@@ -16,9 +16,9 @@ const (
 	OpenApiLoginKey = "__sys_api_login_key__"
 	RequestIdKey    = "__sys_request_id_key__"
 
-	PlatformJd  Platform = 1
+	PlatformTb  Platform = 1
 	PlatformPdd Platform = 2
-	PlatformTb  Platform = 3
+	PlatformJd  Platform = 3
 
 	MediaTypeIntTT  Media = 1
 	MediaTypeIntKS  Media = 2
@@ -49,6 +49,11 @@ const (
 )
 
 var (
+	MediaTypeInt2Str = map[Media]string{
+		MediaTypeIntTT:  MediaTypeStringTT,
+		MediaTypeIntKS:  MediaTypeStringKS,
+		MediaTypeIntGDT: MediaTypeStringGDT,
+	}
 	NotifyLevel = map[int]string{
 		NotifyLevelCompany:    "企业",
 		NotifyLevelDepartment: "部门",

@@ -133,7 +133,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (res
 		if len(emptyMainUserIdPid) > 0 {
 			emptyMainUserIdPid = util.ArrayUnique(emptyMainUserIdPid)
 			var pidList []*common.PddPidList
-			pidList, err = common.NewPddPidListModel("", connects).GetListByBuilder(func(db *gorm.DB) *gorm.DB {
+			pidList, err = common.NewPddPidListModel("", connects).QueryByBuilder(func(db *gorm.DB) *gorm.DB {
 				return db.Where("pid in ?", emptyMainUserIdPid)
 			}, []string{"pid", "main_user_id"})
 			if err != nil {
@@ -146,7 +146,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (res
 			MainUserIds = util.ArrayUnique(MainUserIds)
 
 			var userList []*base.User
-			userList, err = base.NewUserModel("", connects).GetListByBuilder(func(db *gorm.DB) *gorm.DB {
+			userList, err = base.NewUserModel("", connects).QueryByBuilder(func(db *gorm.DB) *gorm.DB {
 				return db.Where("user_id in ?", MainUserIds)
 			}, []string{"user_full_name", "user_id"})
 			if err != nil {
@@ -167,7 +167,7 @@ func (p *PDD) GetOrderList(params statement.OrderList, connects *data.Data) (res
 		if len(emptyNamePid) > 0 {
 			emptyNamePid = util.ArrayUnique(emptyNamePid)
 			var pidList []*common.PddPidList
-			pidList, err = common.NewPddPidListModel("", connects).GetListByBuilder(func(db *gorm.DB) *gorm.DB {
+			pidList, err = common.NewPddPidListModel("", connects).QueryByBuilder(func(db *gorm.DB) *gorm.DB {
 				return db.Where("pid in ?", emptyNamePid)
 			}, []string{"pid", "pid_name"})
 			if err != nil {

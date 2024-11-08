@@ -25,7 +25,7 @@ func (s *Base) CidSendNotify(mainUserId int64, msgFmt string, msgParams []interf
 	builder := func(query *gorm.DB) *gorm.DB {
 		return query.Where("main_user_id = ? and notify_type = ?", mainUserId, notifyType)
 	}
-	settings, err := common.NewNotifySettingModel("", s.DbConnect).GetNotifySettingListByBuilder(builder, []string{})
+	settings, err := common.NewNotifySettingModel("", s.DbConnect).QueryByBuilder(builder, []string{})
 	if err != nil {
 		return
 	}

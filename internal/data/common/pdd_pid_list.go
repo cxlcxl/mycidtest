@@ -40,7 +40,7 @@ func NewPddPidListModel(connect string, connects *data.Data) *PddPidListModel {
 	}
 }
 
-func (m *PddPidListModel) GetListByBuilder(builder data.QueryBuilder, fields []string) (list []*PddPidList, err *errs.MyErr) {
+func (m *PddPidListModel) QueryByBuilder(builder data.QueryBuilder, fields []string) (list []*PddPidList, err *errs.MyErr) {
 	query := m.db.Table(m.dbName).Where("is_delete = ?", 0)
 	if len(fields) > 0 {
 		query = query.Select(fields)
