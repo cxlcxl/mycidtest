@@ -76,7 +76,7 @@ func RegisterValidators() {
 var validators = map[string]validator.Func{
 	"date":     dateValidator,
 	"datetime": dateTimeValidator,
-	//"password":  passwordValidator,
+	"password": passwordValidator,
 }
 
 // 自定义验证规则日期：date
@@ -98,6 +98,14 @@ func dateTimeValidator(fl validator.FieldLevel) bool {
 		return true
 	}
 	if _, err := time.Parse(time.DateTime, datetime); err != nil {
+		return false
+	}
+	return true
+}
+
+func passwordValidator(fl validator.FieldLevel) bool {
+	pass := fl.Field().Interface().(string)
+	if pass == "" {
 		return false
 	}
 	return true

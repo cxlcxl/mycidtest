@@ -13,7 +13,7 @@ import (
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/base"
 	"xiaoniuds.com/cid/internal/data/common"
-	common2 "xiaoniuds.com/cid/internal/service/common"
+	common2 "xiaoniuds.com/cid/internal/service/cid/common"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util"
 	"xiaoniuds.com/cid/vars"
@@ -103,7 +103,7 @@ func (g *PddGoods) List(params statement.PddGoodsList) (goods []*PddGoodsItem, t
 	builder := func(db *gorm.DB) *gorm.DB {
 		if slices.Contains([]string{"sale_num", "today_sale_num"}, params.SortField) {
 			today := time.Now().Format(time.DateOnly)
-			db.Joins(fmt.Sprintf(
+			db = db.Joins(fmt.Sprintf(
 				"left join (select goods_id,sum(sale_num) as sale_num,sum(if(stat_date = '%s', sale_num, 0)) as today_num "+
 					"from goods_sale_sum where main_user_id = %d and stat_date >= '%s' and platform = %d "+
 					"group by goods_id) as sale_tbl on sale_tbl.goods_id = pdd_goods.goods_id",
@@ -174,7 +174,7 @@ func (g *PddGoods) List(params statement.PddGoodsList) (goods []*PddGoodsItem, t
 			adminUserMap[user.UserId] = user.UserName
 		}
 		// 商品ID，获取近30天销量
-		if slices.Contains([]string{"sale_num", "today_sale_num"}, params.SortField) {
+		if !slices.Contains([]string{"sale_num", "today_sale_num"}, params.SortField) {
 			t := time.Now()
 			today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 			adOrderSQL := fmt.Sprintf("SELECT goods_id,COUNT(1) AS sale_num,SUM(IF(order_pay_time >= %d,1,0)) AS today_sale_num FROM chuangliang_doris_cid.ad_order_pdd WHERE main_user_id = ? AND order_pay_time >= ? AND goods_id IN ? GROUP BY goods_id", today.Unix())

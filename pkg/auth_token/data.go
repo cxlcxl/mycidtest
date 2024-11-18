@@ -46,3 +46,9 @@ type OpenApiData struct {
 	AppId      string `json:"app_id"`
 	IP         string `json:"ip"`
 }
+
+// WechatMiniProgramClaims 微信小程序的登录信息
+type WechatMiniProgramClaims struct {
+	WechatMiniProgramData *LoginData `json:"wechat_mini_program_data"`
+	jwt.RegisteredClaims
+}

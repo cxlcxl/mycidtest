@@ -53,7 +53,7 @@ func (m *ACTokenModel) QueryByBuilder(builder data.QueryBuilder, fields []string
 }
 
 func (m *ACTokenModel) GetOneByBuilder(builder data.QueryBuilder, fields []string) (one *ACToken, err *errs.MyErr) {
-	query := m.db.Debug().Table(m.dbName)
+	query := m.db.Table(m.dbName)
 	if len(fields) > 0 {
 		query = query.Select(fields)
 	}
@@ -71,7 +71,7 @@ func (m *ACTokenModel) GetOneByBuilder(builder data.QueryBuilder, fields []strin
 func (m *ACTokenModel) Save(token *ACToken) (err *errs.MyErr) {
 	e := m.db.Transaction(func(tx *gorm.DB) (e error) {
 		// 一个号登一个IP
-		e = tx.Debug().Exec("DELETE FROM access_token WHERE main_user_id = ? AND user_id = ? AND token_type = ?", token.MainUserId, token.UserId, token.TokenType).Error
+		e = tx.Exec("DELETE FROM access_token WHERE main_user_id = ? AND user_id = ? AND token_type = ?", token.MainUserId, token.UserId, token.TokenType).Error
 		if e != nil {
 			return
 		}

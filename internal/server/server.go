@@ -29,11 +29,14 @@ func NewServer(c *config.Config) (srv *Server) {
 	)
 
 	srv.loadServes(
-		NewOpenApiServer(), // 对外 OpenApi
 		NewUserServer(),
 		NewToolServer(),
 		NewPromotionServer(),
 		NewHomeReportServer(),
+		// 对外 OpenApi
+		NewOpenApiServer(),
+		// 微信相关路由
+		NewWechatServer(),
 	)
 
 	return

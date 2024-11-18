@@ -12,21 +12,19 @@ type MyErr struct {
 }
 
 var (
-	SysError             = &MyErr{400, "系统繁忙"}
-	ParamError           = &MyErr{400, "参数解析错误"}
-	ConfigLoadError      = &MyErr{400, "配置加载错误"}
-	LoginEmailNotExist   = &MyErr{400, "登录邮箱不存在"}
-	LoginFinUserError    = &MyErr{401, "用户名或密码错误"}
-	LoginUserExpireError = &MyErr{400, "该账户已过期，请联系运营同学"}
-	ErrMissToken         = &MyErr{500, "TOKEN 缺失"}
-	ErrJwtToken          = &MyErr{500, "TOKEN 生成失败"}
-	ErrParseJwtToken     = &MyErr{500, "TOKEN 解析失败"}
-	ErrAuthFail          = &MyErr{5001, "TOKEN 验证失败"}
-	ErrMissUserInfo      = &MyErr{5001, "用户信息缺失"}
-	ErrJsonUnmarshal     = &MyErr{5001, "JSON 解码失败"}
-	ErrJsonMarshal       = &MyErr{5001, "JSON 加码失败"}
-	OpenApiErrMissAppId  = &MyErr{5001, "AppId 不存在"}
-	OpenApiErrWornSecret = &MyErr{5001, "AppSecret 错误"}
+	SysError             = &MyErr{1400, "系统繁忙"}
+	ParamError           = &MyErr{1400, "参数解析错误"}
+	ConfigLoadError      = &MyErr{1400, "配置加载错误"}
+	LoginEmailNotExist   = &MyErr{1400, "登录邮箱不存在"}
+	LoginFinUserError    = &MyErr{1401, "用户名或密码错误"}
+	LoginUserExpireError = &MyErr{1400, "该账户已过期，请联系运营同学"}
+	ErrMissToken         = &MyErr{1500, "TOKEN 缺失"}
+	ErrJwtToken          = &MyErr{1500, "TOKEN 生成失败"}
+	ErrParseJwtToken     = &MyErr{1500, "TOKEN 解析失败"}
+	ErrAuthFail          = &MyErr{15001, "TOKEN 验证失败"}
+	ErrMissUserInfo      = &MyErr{15001, "用户信息缺失"}
+	ErrJsonUnmarshal     = &MyErr{15001, "JSON 解码失败"}
+	ErrJsonMarshal       = &MyErr{15001, "JSON 加码失败"}
 )
 
 func (ce *MyErr) Error() string {

@@ -63,3 +63,25 @@ func OpenApiAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func WechatMiniProgram(auth config.Auth, connects *data.Data) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var header AuthHeader
+		if err := ctx.ShouldBindHeader(&header); err != nil {
+			response.Error(ctx, errs.Err(errs.ErrAuthFail, err))
+			return
+		}
+		builder := &auth_token.WechatMiniProgramToken{
+			Token: &auth_token.TokenInfo{
+				AccessToken: header.Authorization,
+			},
+		}
+		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
+			response.Error(ctx, err)
+			return
+		} else {
+			ctx.Set(vars.OpenApiLoginKey, builder.Data)
+		}
+		ctx.Next()
+	}
+}

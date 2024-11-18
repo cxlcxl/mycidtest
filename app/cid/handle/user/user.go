@@ -6,7 +6,7 @@ import (
 	"xiaoniuds.com/cid/app/cid/statement"
 	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
-	"xiaoniuds.com/cid/internal/service/user"
+	"xiaoniuds.com/cid/internal/service/cid/user"
 	"xiaoniuds.com/cid/pkg/util/response"
 	"xiaoniuds.com/cid/pkg/util/validator"
 )

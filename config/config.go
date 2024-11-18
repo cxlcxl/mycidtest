@@ -18,10 +18,10 @@ type Config struct {
 
 type Database struct {
 	Mysql        []MysqlHost   `yaml:"mysql"`
-	MysqlConnect MysqlConnect  `yaml:"mysql_connect"`
-	Redis        Redis         `yaml:"redis"`
-	Ssh          bool          `yaml:"ssh"`
+	Redis        []RedisHost   `yaml:"redis"`
 	SshHost      []ConnectHost `yaml:"ssh_host"`
+	MysqlConnect MysqlConnect  `yaml:"mysql_connect"`
+	Ssh          bool          `yaml:"ssh"`
 }
 
 type MysqlConnect struct {
@@ -30,14 +30,11 @@ type MysqlConnect struct {
 	MaxLife int `yaml:"max_life"`
 }
 
-type Redis struct {
-	Common RedisHost `yaml:"common"`
-}
-
 type AuthModule struct {
-	Login       Auth         `yaml:"login"`
-	OpenApi     Auth         `yaml:"open_api"`
-	OpenApiApps []OpenApiApp `yaml:"open_api_apps"`
+	Login             Auth         `yaml:"login"`
+	OpenApi           Auth         `yaml:"open_api"`
+	WechatMiniProgram Auth         `yaml:"wechat_mini_program"`
+	OpenApiApps       []OpenApiApp `yaml:"open_api_apps"`
 }
 
 type MysqlHost struct {
@@ -45,10 +42,11 @@ type MysqlHost struct {
 	Dsn     string `yaml:"dsn"`
 }
 type RedisHost struct {
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
-	Pass string `yaml:"pass"`
-	Db   string `yaml:"db"`
+	HostKey string `yaml:"host_key"`
+	Host    string `yaml:"host"`
+	Port    int    `yaml:"port"`
+	Pass    string `yaml:"pass"`
+	Db      string `yaml:"db"`
 }
 type ConnectHost struct {
 	Host string `yaml:"host"`

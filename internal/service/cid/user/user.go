@@ -39,14 +39,6 @@ func (s *Service) Login(params statement.LoginData) (builder *auth_token.WebToke
 	if err != nil {
 		return
 	}
-	if user.IsLock != 0 {
-		return nil, errs.Err(errs.LoginUserExpireError)
-	}
-
-	// 判断是否过期
-	if user.ParentId == 0 {
-
-	}
 
 	builder = &auth_token.WebToken{
 		User: &auth_token.LoginData{

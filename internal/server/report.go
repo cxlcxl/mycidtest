@@ -1,7 +1,7 @@
 package server
 
 import (
-	"xiaoniuds.com/cid/app/cid/handler/report"
+	"xiaoniuds.com/cid/app/cid/handle/report"
 	"xiaoniuds.com/cid/internal/middleware"
 )
 

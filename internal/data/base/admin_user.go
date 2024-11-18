@@ -60,6 +60,7 @@ type User struct {
 	AgencyOperations       string           `json:"agency_operations" gorm:"agency_operations"`                 // 代运营
 	IsAgencyOperations     int8             `json:"is_agency_operations" gorm:"is_agency_operations"`           // 是否代运营0-否，1-是
 	Ae                     string           `json:"ae" gorm:"ae"`                                               // AE
+	OpenId                 string           `json:"openid" gorm:"openid"`                                       //
 }
 
 type UserModel struct {
@@ -78,18 +79,22 @@ func NewUserModel(connect string, connects *data.Data) *UserModel {
 }
 
 func (m *UserModel) FindUserByLogin(email, password string) (user *User, err *errs.MyErr) {
-	e := m.db.Debug().Table(m.dbName).
-		Where("email = ? and password = ?", email, password).
-		Where("is_delete = ?", 0).
-		First(&user).Error
+	e := m.db.Table(m.dbName).Where("is_delete = 0 and email = ? and password = ?", email, password).First(&user).Error
 	if e != nil {
 		return nil, errs.Err(errs.LoginFinUserError, e)
+	}
+	if user.IsLock != 0 {
+		return nil, errs.Err(errs.LoginUserExpireError)
+	}
+	// 判断是否过期
+	if user.ParentId == 0 {
+
 	}
 	return
 }
 
 func (m *UserModel) FindUserById(userId int64) (user *User, err *errs.MyErr) {
-	e := m.db.Debug().Table(m.dbName).
+	e := m.db.Table(m.dbName).
 		Where("user_id = ?", userId).
 		First(&user).Error
 	if e != nil {
@@ -121,6 +126,16 @@ func (m *UserModel) QueryByBuilder(builder data.QueryBuilder, fields []string) (
 	e := query.Find(&list).Error
 	if e != nil {
 		return nil, errs.Err(errs.SysError, e)
+	}
+	return
+}
+
+func (m *UserModel) UpdateByBuilder(builder data.QueryBuilder, data map[string]interface{}) (err *errs.MyErr) {
+	query := m.db.Table(m.dbName)
+	query = builder(query)
+	e := query.Updates(data).Error
+	if e != nil {
+		return errs.Err(errs.SysError, e)
 	}
 	return
 }

@@ -61,7 +61,7 @@ func NewPddGoodsModel(connect string, connects *data.Data) *PddGoodsModel {
 }
 
 func (m *PddGoodsModel) QueryListByBuilder(builder data.QueryBuilder, fields []string, offset, pageSize int) (list []*PddGoods, total int64, err *errs.MyErr) {
-	query := m.db.Table(m.dbName).Where("pdd_goods.is_delete = ?", 0)
+	query := m.db.Debug().Table(m.dbName).Where("pdd_goods.is_delete = ?", 0)
 	if len(fields) > 0 {
 		query = query.Select(fields)
 	}
