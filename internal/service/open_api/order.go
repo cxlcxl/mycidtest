@@ -3,14 +3,12 @@ package open_api
 import (
 	"errors"
 	"xiaoniuds.com/cid/app/open_api/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/vars"
 )
 
 type Order struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 

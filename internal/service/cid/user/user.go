@@ -7,17 +7,16 @@ import (
 	"gorm.io/gorm"
 	"slices"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/base"
 	"xiaoniuds.com/cid/internal/data/common"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
 	"xiaoniuds.com/cid/pkg/util"
+	"xiaoniuds.com/cid/vars"
 )
 
 type Service struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -62,7 +61,7 @@ func (s *Service) Login(params statement.LoginData) (builder *auth_token.WebToke
 			ProductVersion: params.ProductVersion,
 		},
 	}
-	err = auth_token.CreateJwtToken(builder, s.C.Auth.Login, s.DbConnect)
+	err = auth_token.CreateJwtToken(builder, vars.Config.Auth.Login, s.DbConnect)
 	return
 }
 
@@ -72,7 +71,7 @@ func (s *Service) GetMyAuthorizedUsers(module, moduleRangeType string, userId in
 		return
 	}
 	// 用户的 GroupId 需要根据版本查询
-	adminUserVersionService := AdminUserVersionService{C: s.C, DbConnect: s.DbConnect}
+	adminUserVersionService := AdminUserVersionService{DbConnect: s.DbConnect}
 	version, err := adminUserVersionService.GetAdminUserVersionInfo(user.UserId, productVersion, []string{})
 	if err != nil {
 		return
@@ -136,7 +135,7 @@ func (s *Service) GetModuleRange(module, moduleRangeType string, user *UserModul
 			return "", errs.Err(errs.SysError, errors.New("获取权限配置失败: 版本信息缺失"))
 		}
 		var infoAdminUser *common.UserVersion
-		infoAdminUser, err = (&AdminUserVersionService{C: s.C, DbConnect: s.DbConnect}).GetAdminUserVersionInfo(user.UserId, productVersion, []string{})
+		infoAdminUser, err = (&AdminUserVersionService{DbConnect: s.DbConnect}).GetAdminUserVersionInfo(user.UserId, productVersion, []string{})
 		if err != nil {
 			return "", errs.Err(errs.SysError, err)
 		}

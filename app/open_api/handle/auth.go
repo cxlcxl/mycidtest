@@ -3,7 +3,6 @@ package handle
 import (
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/open_api/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/open_api"
 	"xiaoniuds.com/cid/pkg/util/response"
@@ -11,7 +10,6 @@ import (
 )
 
 type Auth struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -24,7 +22,7 @@ func (a *Auth) GetToken() gin.HandlerFunc {
 			return
 		}
 
-		loginInfo, err := (&open_api.Service{C: a.C, DbConnect: a.DbConnect}).GetToken(loginData)
+		loginInfo, err := (&open_api.Service{DbConnect: a.DbConnect}).GetToken(loginData)
 		if err != nil {
 			response.Error(ctx, err)
 			return

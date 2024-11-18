@@ -6,16 +6,16 @@ import (
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
+	"xiaoniuds.com/cid/vars"
 )
 
 type Service struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
 func (s *Service) GetToken(params statement.Token) (builder *auth_token.OpenApiToken, err *errs.MyErr) {
 	var app *config.OpenApiApp
-	for _, a := range s.C.Auth.OpenApiApps {
+	for _, a := range vars.Config.Auth.OpenApiApps {
 		if a.AppId == params.AppId {
 			if a.AppSecret != params.AppSecret {
 				err = errs.Err(errs.SysError, errs.OpenApiErrWornSecret)
@@ -34,7 +34,7 @@ func (s *Service) GetToken(params statement.Token) (builder *auth_token.OpenApiT
 			AppId:      params.AppId,
 		},
 	}
-	err = auth_token.CreateJwtToken(builder, s.C.Auth.OpenApi, s.DbConnect)
+	err = auth_token.CreateJwtToken(builder, vars.Config.Auth.OpenApi, s.DbConnect)
 
 	return
 }

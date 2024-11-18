@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/cid/user"
 	"xiaoniuds.com/cid/pkg/util/response"
 	"xiaoniuds.com/cid/pkg/util/validator"
+	"xiaoniuds.com/cid/vars"
 )
 
 type Api struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -25,7 +24,7 @@ func (a *Api) Login() gin.HandlerFunc {
 			return
 		}
 
-		loginInfo, err := (&user.Service{C: a.C, DbConnect: a.DbConnect}).Login(loginData)
+		loginInfo, err := (&user.Service{DbConnect: a.DbConnect}).Login(loginData)
 		if err != nil {
 			response.Error(ctx, err)
 			return
@@ -44,16 +43,16 @@ func (a *Api) ZoneDomain() gin.HandlerFunc {
 			return
 		}
 
-		zone, err := (&user.Service{C: a.C, DbConnect: a.DbConnect}).ZoneDomain(params)
+		zone, err := (&user.Service{DbConnect: a.DbConnect}).ZoneDomain(params)
 		if err != nil {
 			response.Error(ctx, err)
 			return
 		}
 
 		if zone == 0 {
-			response.Success(ctx, fmt.Sprintf("cli.%s", a.C.MainDomain))
+			response.Success(ctx, fmt.Sprintf("cli.%s", vars.Config.MainDomain))
 		} else {
-			response.Success(ctx, fmt.Sprintf("cli%d.%s", zone, a.C.MainDomain))
+			response.Success(ctx, fmt.Sprintf("cli%d.%s", zone, vars.Config.MainDomain))
 		}
 	}
 }

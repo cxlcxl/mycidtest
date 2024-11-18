@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"xiaoniuds.com/cid/app/wechat/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/base"
 	"xiaoniuds.com/cid/pkg/auth_token"
@@ -18,7 +17,6 @@ import (
 )
 
 type Service struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -122,7 +120,7 @@ func (s *Service) SelectUserLogin(openid string, userId int64) (user *MiniProgra
 			ProductVersion: 2,
 		},
 	}
-	err = auth_token.CreateJwtToken(tokenBuilder, s.C.Auth.WechatMiniProgram, s.DbConnect)
+	err = auth_token.CreateJwtToken(tokenBuilder, vars.Config.Auth.WechatMiniProgram, s.DbConnect)
 	if err != nil {
 		return nil, "", err
 	}

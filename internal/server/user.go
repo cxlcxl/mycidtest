@@ -6,7 +6,7 @@ import (
 
 func NewUserServer() Opt {
 	return func(srv *Server) {
-		userApi := &user.Api{C: srv.C, DbConnect: srv.DbConnects}
+		userApi := &user.Api{DbConnect: srv.DbConnects}
 
 		group := srv.engine.Group("/user")
 		{

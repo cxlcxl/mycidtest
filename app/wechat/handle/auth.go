@@ -3,7 +3,6 @@ package handle
 import (
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/wechat/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/wechat"
 	"xiaoniuds.com/cid/pkg/util/response"
@@ -11,7 +10,6 @@ import (
 )
 
 type Auth struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -24,7 +22,7 @@ func (a *Auth) MiniProgramLogin() gin.HandlerFunc {
 			return
 		}
 
-		bindUsers, openId, err := (&wechat.Service{C: a.C, DbConnect: a.DbConnect}).GetUsersByCode(loginData.Code)
+		bindUsers, openId, err := (&wechat.Service{DbConnect: a.DbConnect}).GetUsersByCode(loginData.Code)
 		if err != nil {
 			response.Error(ctx, err)
 			return
@@ -43,7 +41,7 @@ func (a *Auth) BindUser() gin.HandlerFunc {
 			return
 		}
 
-		bindUsers, err := (&wechat.Service{C: a.C, DbConnect: a.DbConnect}).BindUser(bindData)
+		bindUsers, err := (&wechat.Service{DbConnect: a.DbConnect}).BindUser(bindData)
 		if err != nil {
 			response.Error(ctx, err)
 			return
@@ -62,7 +60,7 @@ func (a *Auth) SelectUser() gin.HandlerFunc {
 			return
 		}
 
-		user, token, err := (&wechat.Service{C: a.C, DbConnect: a.DbConnect}).SelectUserLogin(selectData.OpenId, selectData.UserId)
+		user, token, err := (&wechat.Service{DbConnect: a.DbConnect}).SelectUserLogin(selectData.OpenId, selectData.UserId)
 		if err != nil {
 			response.Error(ctx, err)
 			return

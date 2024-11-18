@@ -2,12 +2,10 @@ package promotion
 
 import (
 	"github.com/gin-gonic/gin"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 )
 
 type MediaAccount struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 

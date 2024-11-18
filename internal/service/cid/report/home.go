@@ -3,13 +3,11 @@ package report
 import (
 	"fmt"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
 type HomeService struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 

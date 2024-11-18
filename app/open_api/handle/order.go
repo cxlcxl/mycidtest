@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/open_api/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/open_api"
 	"xiaoniuds.com/cid/pkg/util/response"
@@ -12,7 +11,6 @@ import (
 )
 
 type OpenOrder struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -30,7 +28,7 @@ func (o *OpenOrder) OrderList() gin.HandlerFunc {
 			return
 		}
 
-		orders, total, err := (&open_api.Order{C: o.C, DbConnect: o.DbConnect}).OrderList(params)
+		orders, total, err := (&open_api.Order{DbConnect: o.DbConnect}).OrderList(params)
 		if err != nil {
 			response.Error(ctx, err)
 			return

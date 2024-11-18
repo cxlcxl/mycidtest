@@ -6,7 +6,6 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/base"
 	"xiaoniuds.com/cid/internal/data/common"
@@ -15,7 +14,6 @@ import (
 )
 
 type CidDeliveryGoodsService struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 

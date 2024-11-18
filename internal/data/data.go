@@ -18,12 +18,12 @@ type Data struct {
 	DbConnects map[string]*gorm.DB
 }
 
-func NewDB(c *config.Config) (data *Data) {
+func NewDB() (data *Data) {
 	data = &Data{
 		DbConnects: make(map[string]*gorm.DB),
 	}
-	if c.Database.Ssh {
-		for _, sshHost := range c.Database.SshHost {
+	if vars.Config.Database.Ssh {
+		for _, sshHost := range vars.Config.Database.SshHost {
 			registerSsh(&Ssh{
 				Host:     sshHost.Host,
 				User:     sshHost.User,
@@ -32,7 +32,7 @@ func NewDB(c *config.Config) (data *Data) {
 			})
 		}
 	}
-	for _, host := range c.Database.Mysql {
+	for _, host := range vars.Config.Database.Mysql {
 		if host.Dsn == "" {
 			continue
 		}
@@ -45,9 +45,9 @@ func NewDB(c *config.Config) (data *Data) {
 		if err != nil {
 			log.Fatalf("[%s]failed opening mysql: %v", host.HostKey, err)
 		}
-		s.SetMaxIdleConns(c.Database.MysqlConnect.MaxIdle)
-		s.SetMaxOpenConns(c.Database.MysqlConnect.MaxOpen)
-		s.SetConnMaxLifetime(time.Minute * time.Duration(c.Database.MysqlConnect.MaxLife))
+		s.SetMaxIdleConns(vars.Config.Database.MysqlConnect.MaxIdle)
+		s.SetMaxOpenConns(vars.Config.Database.MysqlConnect.MaxOpen)
+		s.SetConnMaxLifetime(time.Minute * time.Duration(vars.Config.Database.MysqlConnect.MaxLife))
 
 		data.DbConnects[host.HostKey] = db
 	}

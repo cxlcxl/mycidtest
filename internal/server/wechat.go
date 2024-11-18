@@ -6,7 +6,7 @@ import (
 
 func NewWechatServer() Opt {
 	return func(srv *Server) {
-		auth := &handle.Auth{C: srv.C, DbConnect: srv.DbConnects}
+		auth := &handle.Auth{DbConnect: srv.DbConnects}
 
 		group := srv.engine.Group("/api/wx")
 		{

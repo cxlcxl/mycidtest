@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"slices"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/cid/promotion"
 	"xiaoniuds.com/cid/pkg/errs"
@@ -14,7 +13,6 @@ import (
 )
 
 type Promotion struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -31,7 +29,7 @@ func (h *Promotion) PddGoods() gin.HandlerFunc {
 			return
 		}
 
-		list, total, err := (&promotion.PddGoods{C: h.C, DbConnect: h.DbConnect}).List(params)
+		list, total, err := (&promotion.PddGoods{DbConnect: h.DbConnect}).List(params)
 		if err != nil {
 			response.Error(ctx, err)
 			return

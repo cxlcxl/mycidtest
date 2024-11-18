@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 	"slices"
 	"strings"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/common"
 	"xiaoniuds.com/cid/internal/service/user"
@@ -16,7 +15,6 @@ import (
 )
 
 type Base struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 

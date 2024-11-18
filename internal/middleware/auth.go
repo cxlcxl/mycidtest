@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/pkg/auth_token"
 	"xiaoniuds.com/cid/pkg/errs"
@@ -20,7 +19,7 @@ type AuthHeader struct {
 	Authorization string `header:"Authorization"`
 }
 
-func LoginAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
+func LoginAuth(connects *data.Data) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var header AuthHeader
 		if err := ctx.ShouldBindHeader(&header); err != nil {
@@ -32,7 +31,7 @@ func LoginAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 				AccessToken: header.Authorization,
 			},
 		}
-		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
+		if err := auth_token.ParseToken(builder, vars.Config.Auth.Login, connects); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {
@@ -42,7 +41,7 @@ func LoginAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 	}
 }
 
-func OpenApiAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
+func OpenApiAuth(connects *data.Data) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var header AuthHeader
 		if err := ctx.ShouldBindHeader(&header); err != nil {
@@ -54,7 +53,7 @@ func OpenApiAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 				AccessToken: header.Authorization,
 			},
 		}
-		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
+		if err := auth_token.ParseToken(builder, vars.Config.Auth.OpenApi, connects); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {
@@ -64,7 +63,7 @@ func OpenApiAuth(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 	}
 }
 
-func WechatMiniProgram(auth config.Auth, connects *data.Data) gin.HandlerFunc {
+func WechatMiniProgram(connects *data.Data) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var header AuthHeader
 		if err := ctx.ShouldBindHeader(&header); err != nil {
@@ -76,7 +75,7 @@ func WechatMiniProgram(auth config.Auth, connects *data.Data) gin.HandlerFunc {
 				AccessToken: header.Authorization,
 			},
 		}
-		if err := auth_token.ParseToken(builder, auth, connects); err != nil {
+		if err := auth_token.ParseToken(builder, vars.Config.Auth.WechatMiniProgram, connects); err != nil {
 			response.Error(ctx, err)
 			return
 		} else {

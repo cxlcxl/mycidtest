@@ -3,7 +3,6 @@ package report
 import (
 	"github.com/gin-gonic/gin"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/service/cid/report"
 	"xiaoniuds.com/cid/pkg/util/response"
@@ -11,7 +10,6 @@ import (
 )
 
 type Home struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -23,7 +21,6 @@ func (h *Home) OrderSum() gin.HandlerFunc {
 			return
 		}
 		orderSum, err := (&report.HomeService{
-			C:         h.C,
 			DbConnect: h.DbConnect,
 		}).OrderSum(params)
 		if err != nil {

@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 	"xiaoniuds.com/cid/app/cid/statement"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/base"
 	"xiaoniuds.com/cid/internal/data/common"
@@ -20,7 +19,6 @@ import (
 )
 
 type PddGoods struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
@@ -71,7 +69,6 @@ func (g *PddGoods) List(params statement.PddGoodsList) (goods []*PddGoodsItem, t
 	}
 	if DeliveryMedia > 0 {
 		goodsIds = (&common2.CidDeliveryGoodsService{
-			C:         g.C,
 			DbConnect: g.DbConnect,
 		}).SearchGoodsByAdvertisers(
 			params.LoginData.MainUserId,
@@ -196,7 +193,7 @@ func (g *PddGoods) List(params statement.PddGoodsList) (goods []*PddGoodsItem, t
 			}
 		}
 
-		deliveryAccountsMap = (&common2.CidDeliveryGoodsService{C: g.C, DbConnect: g.DbConnect}).BelongsTopAccountsByGoodsIds(params.LoginData.MainUserId, vars.PlatformPdd, pddGoodsIds)
+		deliveryAccountsMap = (&common2.CidDeliveryGoodsService{DbConnect: g.DbConnect}).BelongsTopAccountsByGoodsIds(params.LoginData.MainUserId, vars.PlatformPdd, pddGoodsIds)
 		for i, pddGoods := range goods {
 			// 账号所属判断
 			goods[i].IsBelong = "main"
@@ -209,7 +206,7 @@ func (g *PddGoods) List(params statement.PddGoodsList) (goods []*PddGoodsItem, t
 				params.OwnerUserId != params.LoginData.MainUserId {
 				goods[i].IsBelong = "child"
 			}
-			if slices.Contains(g.C.DuoIds, pddGoods.DuoId) {
+			if slices.Contains(vars.Config.DuoIds, pddGoods.DuoId) {
 				goods[i].IsBelong = "sys"
 			}
 			stringGoodsId := strconv.FormatInt(pddGoods.GoodsId, 10)

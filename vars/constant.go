@@ -1,6 +1,9 @@
 package vars
 
-import "xiaoniuds.com/cid/pkg/mylog"
+import (
+	"xiaoniuds.com/cid/config"
+	"xiaoniuds.com/cid/pkg/mylog"
+)
 
 type Platform int
 type Media int
@@ -9,6 +12,7 @@ var (
 	// BasePath 系统跟路径
 	BasePath string
 	SysLog   *mylog.Log
+	Config   *config.Config
 )
 
 const (

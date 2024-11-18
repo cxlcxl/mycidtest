@@ -3,14 +3,12 @@ package user
 import (
 	"gorm.io/gorm"
 	"slices"
-	"xiaoniuds.com/cid/config"
 	"xiaoniuds.com/cid/internal/data"
 	"xiaoniuds.com/cid/internal/data/common"
 	"xiaoniuds.com/cid/pkg/errs"
 )
 
 type AdminUserVersionService struct {
-	C         *config.Config
 	DbConnect *data.Data
 }
 
