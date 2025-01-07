@@ -20,12 +20,16 @@ import (
 
 var eventTypes = map[int8]string{1: "click", 2: "expose"}
 
-func TestJcReport(t *testing.T) {
+func connectDb() *data.Data {
 	sysLogPath := path.Join("../log", "syslog", time.Now().Format("20060102"))
 	vars.SysLog = mylog.NewLog(sysLogPath)
 	vars.Config, _ = config.LoadConfig("../config/config.yaml")
 
-	db := data.NewDB()
+	return data.NewDB()
+}
+
+func TestJcReport(t *testing.T) {
+	db := connectDb()
 
 	links, _ := common.NewJcLinkModel("", db).QueryByBuilder(func(db *gorm.DB) *gorm.DB {
 		return db.Where("is_delete = 0 and main_user_id != 12000020828")
@@ -152,4 +156,27 @@ func getCallbackParam(l *common.JcReportLog) string {
 	))
 
 	return callback
+}
+
+// TestCallback 手动回传
+func TestCallback(t *testing.T) {
+	db := connectDb()
+	reportLogs, _ := common.NewJcReportLogModel("", db).QueryByBuilder(func(db *gorm.DB) *gorm.DB {
+		return db.Where("event_type = ?", 1).
+			Where("advertiser_id = ?", 53321606).
+			Where("pid = ?", 2088941772678126).
+			Limit(10).Offset(0).Order("id desc")
+	}, []string{"id", "ad_site_id", "event_type", "pid", "advertiser_id", "log_key"})
+
+	for _, reportLog := range reportLogs {
+		resp, _ := resty.New().R().SetQueryParams(map[string]string{
+			"uk":            reportLog.LogKey,
+			"transformtype": "6",
+			"pid":           "2088941772678126",
+			"media_type":    "2",
+			"event_type":    eventTypes[reportLog.EventType],
+		}).Get("https://cid.xiaoniuds.com/Cid/Jc/callback")
+
+		t.Log(reportLog.ID, resp.StatusCode(), resp.String())
+	}
 }
